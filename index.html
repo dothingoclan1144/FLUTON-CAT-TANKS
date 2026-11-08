@@ -2,1934 +2,1471 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FLUTON CAT TANKS · 3D CHIBI EDITION</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=JetBrains+Mono:wght@600;800&display=swap');
+:root{
+  --bg:#070b14;
+  --panel:#10192b;
+  --line:#263754;
+  --cyan:#69e4e8;
+  --gold:#ffd36a;
+  --pink:#ff5c8a;
+  --green:#49d69b;
+  --muted:#94a7c4;
+}
+*{box-sizing:border-box;user-select:none}
+body{
+  margin:0;
+  background:radial-gradient(circle at 50% -15%,#1e3354 0,#070b14 60%);
+  color:#eef5ff;
+  font-family:'Segoe UI',Inter,system-ui,sans-serif;
+  min-height:100vh;
+}
+button{
+  cursor:pointer;
+  border:1px solid #38506e;
+  background:linear-gradient(180deg,#20334f,#152338);
+  color:#f5f8ff;
+  border-radius:10px;
+  padding:10px 14px;
+  font-weight:800;
+  letter-spacing:.05em;
+  transition:transform .12s,box-shadow .15s,border-color .15s;
+}
+button:hover:not(:disabled){
+  transform:translateY(-1px);
+  border-color:var(--cyan);
+  box-shadow:0 4px 18px #69e4e833;
+}
+button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{opacity:.38;cursor:not-allowed}
 
-  :root {
-    --bg: #070b14;
-    --panel: rgba(15, 24, 42, 0.88);
-    --line: rgba(105, 228, 232, 0.25);
-    --cyan: #69e4e8;
-    --gold: #ffd36a;
-    --pink: #ff668e;
-    --green: #49d69b;
-    --muted: #94a3b8;
-  }
+.top{
+  max-width:1240px;
+  margin:auto;
+  padding:16px 20px 8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:900;
+  letter-spacing:.14em;
+  font-size:clamp(18px,2.8vw,26px);
+}
+.brand span{color:var(--cyan)}
+.brand-logo{
+  width:44px;height:44px;
+  border-radius:50%;
+  background:#fff;
+  padding:3px;
+  object-fit:contain;
+  box-shadow:0 0 16px #69e4e855;
+}
+.top-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill-btn{
+  padding:8px 13px;
+  border-radius:999px;
+  font-size:12px;
+  background:#132136;
+  border:1px solid #354c6e;
+}
+.wallet{
+  color:var(--gold);
+  font-weight:900;
+  border:1px solid #755d30;
+  padding:8px 14px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#2a2215,#1a150d);
+  box-shadow:0 0 15px #ffd36a22;
+}
 
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    margin: 0;
-    background: radial-gradient(circle at 50% 0%, #1a2d4c 0%, #070b14 70%);
-    color: #f1f5f9;
-    font-family: 'Fredoka', system-ui, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+.wrap{max-width:1240px;margin:0 auto;padding:10px 20px 28px}
+.live-ticker{
+  background:#0d1729;
+  border:1px solid #243757;
+  border-radius:10px;
+  padding:7px 14px;
+  margin-bottom:12px;
+  font-size:12px;
+  color:#b6cae6;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  overflow:hidden;
+}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#49d69b;
+  box-shadow:0 0 8px #49d69b;
+  flex:0 0 auto;
+}
 
-  .mono { font-family: 'JetBrains Mono', monospace; }
+.hud{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:12px;
+  margin-bottom:12px;
+}
+.hudbox,.panel{
+  background:linear-gradient(155deg,#142138,#0c1423);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:12px 16px;
+  box-shadow:0 12px 28px #00000055;
+}
+.hudbox:last-child{text-align:right}
+.name{font-weight:900;font-size:15px;letter-spacing:.04em}
+.sub{font-size:12px;color:var(--muted);margin-top:3px}
+.health{
+  height:10px;
+  background:#1f2e45;
+  border-radius:20px;
+  margin-top:8px;
+  overflow:hidden;
+  border:1px solid #314769;
+}
+.health i{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#3cd496,#a6f075);
+  width:100%;
+  transition:width .25s ease;
+}
+#enemyHealth{background:linear-gradient(90deg,#ff5c8a,#ff9b6a);margin-left:auto}
+.timer{text-align:center;min-width:130px}
+.timer strong{font-size:24px;color:var(--gold);font-variant-numeric:tabular-nums}
+.timer small{display:block;color:var(--muted);font-size:10px;letter-spacing:.15em}
 
-  /* Custom Range Sliders */
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 10px;
-    background: #1e293b;
-    border-radius: 999px;
-    outline: none;
-    border: 1px solid #334155;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #69e4e8, #2563eb);
-    border: 2px solid #fff;
-    cursor: pointer;
-    box-shadow: 0 0 12px rgba(105, 228, 232, 0.7);
-  }
+.gamegrid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 280px;
+  gap:12px;
+}
+.stage{
+  position:relative;
+  background:#0c1626;
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  min-height:510px;
+}
+canvas{
+  display:block;
+  width:100%;
+  height:510px;
+  touch-action:manipulation;
+}
 
-  /* Game Stage & 3D Canvas */
-  #stageContainer {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    min-height: 340px;
-    max-height: 580px;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid var(--line);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 0 30px rgba(105, 228, 232, 0.08);
-    background: #0c1626;
-  }
-  #threeCanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    touch-action: none;
-  }
+.ai-bubble{
+  position:absolute;
+  top:52px;
+  right:28px;
+  max-width:270px;
+  background:linear-gradient(145deg,#1d2e4d,#111c30);
+  border:1px solid #69e4e888;
+  border-radius:14px;
+  padding:10px 13px;
+  font-size:12px;
+  line-height:1.45;
+  color:#eef7ff;
+  box-shadow:0 10px 25px #00000088;
+  z-index:2;
+  pointer-events:none;
+  transition:opacity .25s,transform .25s;
+}
+.ai-bubble b{color:var(--cyan);display:block;font-size:10px;letter-spacing:.1em;margin-bottom:3px}
 
-  /* 3D Speech Bubble */
-  .speech-bubble {
-    position: absolute;
-    max-width: 240px;
-    background: #ffffff;
-    color: #0f172a;
-    padding: 10px 14px;
-    border-radius: 16px;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.35;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.45);
-    pointer-events: none;
-    transform: translate(-50%, -100%);
-    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    z-index: 15;
-    border: 2px solid #0f172a;
-  }
-  .speech-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -9px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 9px 9px 0;
-    border-style: solid;
-    border-color: #ffffff transparent transparent transparent;
-  }
-  .speech-bubble.bot-bubble {
-    background: #1e1b4b;
-    color: #f8fafc;
-    border-color: #ff668e;
-  }
-  .speech-bubble.bot-bubble::after {
-    border-color: #1e1b4b transparent transparent transparent;
-  }
+.sidebar{display:flex;flex-direction:column;gap:12px}
+.panel h3{
+  margin:0 0 10px;
+  font-size:12px;
+  letter-spacing:.14em;
+  color:var(--cyan);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.statrow{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  padding:5px 0;
+  color:#cbd8eb;
+  border-bottom:1px dashed #21324d;
+}
+.statrow:last-child{border-bottom:none}
+.statrow b{color:#fff}
 
-  /* Arcade Buttons */
-  .btn-arcade {
-    transition: all 0.15s ease;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.4);
-  }
-  .btn-arcade:active:not(:disabled) {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.4);
-  }
-  .btn-arcade:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.controls label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+.controls input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer}
+.full{grid-column:1/-1}
+.fire{
+  background:linear-gradient(120deg,#ff4d7e,#b8255f);
+  border:none;
+  padding:14px;
+  font-size:15px;
+  box-shadow:0 6px 20px #e94e7944;
+}
+.fire:hover:not(:disabled){box-shadow:0 6px 24px #ff4d7e88}
+.hint{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0 0}
+.log{
+  height:110px;
+  overflow-y:auto;
+  font-size:11.5px;
+  color:#b8c7dc;
+  line-height:1.5;
+}
+.log div{border-bottom:1px solid #1f2e45;padding:4px 0}
 
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #0f172a; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
+/* Overlays & Modals */
+.overlay{
+  position:absolute;
+  inset:0;
+  background:#060c17e6;
+  backdrop-filter:blur(7px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:10;
+}
+.modal{
+  width:min(600px,100%);
+  max-height:94%;
+  overflow-y:auto;
+  background:linear-gradient(155deg,#162640,#0b1322);
+  border:1px solid #3a5275;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 25px 75px #000c;
+}
+.modal h1{margin:0 0 6px;font-size:clamp(22px,4vw,32px);letter-spacing:.06em}
+.modal p{color:#aebed4;line-height:1.5;margin:0 0 12px;font-size:13.5px}
+.input-group{margin:12px 0}
+.input-group label{display:block;font-size:11px;color:var(--cyan);font-weight:800;letter-spacing:.1em;margin-bottom:6px}
+.input-group input{
+  width:100%;
+  padding:11px 14px;
+  border-radius:10px;
+  border:1px solid #3b557a;
+  background:#0b1424;
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+  outline:none;
+}
+.input-group input:focus{border-color:var(--cyan)}
 
-  @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 15px rgba(255, 102, 142, 0.5); }
-    50% { box-shadow: 0 0 28px rgba(255, 102, 142, 0.9); }
-  }
-  .fire-pulse { animation: pulseGlow 2s infinite; }
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.cat{
+  border:1px solid #344a68;
+  background:#0f1c30;
+  border-radius:13px;
+  padding:12px 8px;
+  text-align:center;
+  cursor:pointer;
+  transition:.15s;
+}
+.cat.selected{
+  border-color:var(--cyan);
+  background:#152945;
+  box-shadow:0 0 0 2px #69e4e844;
+}
+.cat .art{font-size:36px;display:block}
+.cat b{display:block;margin-top:5px;font-size:13px}
+.cat small{color:var(--muted);font-size:11px}
+
+.modalactions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}
+.primary{
+  background:linear-gradient(120deg,#52e5e8,#248da8);
+  color:#05131c;
+  border:none;
+  padding:12px 20px;
+  font-size:14px;
+}
+
+.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+.item{padding:12px;border:1px solid #31445e;border-radius:12px;background:#0f1b2e}
+.item b{display:block;font-size:13px}
+.item small{color:var(--muted);display:block;margin:5px 0 9px;font-size:11.5px}
+.item button{width:100%;font-size:12px}
+
+.lb-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+.lb-table th{text-align:left;color:var(--cyan);font-size:11px;letter-spacing:.1em;padding:8px;border-bottom:1px solid #2c4161}
+.lb-table td{padding:8px;border-bottom:1px solid #1d2c44}
+.lb-rank-1{color:var(--gold);font-weight:900}
+
+@media(max-width:860px){
+  .gamegrid{grid-template-columns:1fr}
+  .sidebar{display:grid;grid-template-columns:1fr 1fr}
+  .sidebar .panel:last-child{grid-column:1/-1}
+}
+@media(max-width:540px){
+  .sidebar{grid-template-columns:1fr}
+  .cats{grid-template-columns:1fr}
+  .shopgrid{grid-template-columns:1fr}
+}
 </style>
 </head>
-<body class="pb-8">
+<body>
 
-<!-- TOP NAVIGATION BAR -->
-<header class="max-w-7xl mx-auto px-4 pt-4 pb-2 flex flex-wrap items-center justify-between gap-3">
-  <div class="flex items-center gap-3">
-    <!-- Fluton Official Minimalist Logo SVG -->
-    <div class="w-11 h-11 rounded-full bg-white p-1.5 shadow-lg shadow-cyan-500/20 flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 100 100" class="w-full h-full">
-        <circle cx="50" cy="50" r="48" fill="#090d17"/>
-        <path d="M22 46 L50 18 L78 46" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M52 42 L35 59 L52 76" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="66" cy="59" r="9" fill="none" stroke="#ffffff" stroke-width="6"/>
-        <line x1="56" y1="65" x2="76" y2="53" stroke="#090d17" stroke-width="4"/>
-      </svg>
-    </div>
-    <div>
-      <div class="flex items-center gap-2">
-        <h1 class="text-xl sm:text-2xl font-bold tracking-wider text-white">FLUTON <span class="text-[#69e4e8]">CAT TANKS</span></h1>
-        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">3D CHIBI</span>
-      </div>
-      <p class="text-xs text-slate-400 hidden sm:block">Chibi 3D Artillery · OpenAI Tactical Bot · Online Leaderboard</p>
-    </div>
+<header class="top">
+  <div class="brand">
+    <img class="brand-logo" src="fluton-logo.png" onerror="this.style.display='none'" alt="Fluton Logo">
+    <div>FLUTON <span>CAT TANKS 3D</span></div>
   </div>
-
-  <!-- Action Toolbar -->
-  <div class="flex items-center gap-2 flex-wrap">
-    <button id="btnMusic" class="btn-arcade px-3 py-2 rounded-xl bg-slate-800/90 border border-slate-600 text-xs font-bold flex items-center gap-1.5 text-cyan-300 hover:border-cyan-400" title="Toggle Background Music">
-      <span id="musicIcon">🔊</span> <span class="hidden sm:inline">MUSIC: ON</span>
-    </button>
-    <button id="btnOpenAI" class="btn-arcade px-3 py-2 rounded-xl bg-indigo-950/90 border border-indigo-500/50 text-xs font-bold flex items-center gap-1.5 text-indigo-200 hover:border-indigo-400" title="System Bot AI Status & Configuration">
-      <span>🤖</span> <span>SYSTEM BOT 50%</span>
-      <span id="aiBadge" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    </button>
-    <button id="btnLeaderboard" class="btn-arcade px-3 py-2 rounded-xl bg-amber-950/80 border border-amber-500/50 text-xs font-bold flex items-center gap-1.5 text-amber-200 hover:border-amber-400">
-      <span>🏆</span> <span>LEADERBOARD</span>
-    </button>
-    <div class="px-3.5 py-2 rounded-full bg-amber-500/15 border border-amber-400/40 text-[#ffd36a] font-bold text-sm mono flex items-center gap-1.5">
-      <span>◆</span> <span id="coinsDisplay">120</span> <span class="text-xs">$FLUTON</span>
-    </div>
+  <div class="top-tools">
+    <button class="pill-btn" id="soundToggle">🔊 SOUND: ON</button>
+    <button class="pill-btn" id="openLbBtn">🏆 LEADERBOARD</button>
+    <button class="pill-btn" id="openAiBtn">🤖 SYSTEM BOT (50%)</button>
+    <div class="wallet">◆ <span id="coins">120</span> $FLUTON</div>
   </div>
 </header>
 
-<!-- LIVE GLOBAL TICKER (SHARED ACROSS ALL PLAYERS) -->
-<div class="max-w-7xl mx-auto px-4 mt-1">
-  <div class="bg-slate-900/75 border border-cyan-500/20 rounded-xl px-3 py-1.5 flex items-center gap-2 text-[11px] overflow-hidden">
-    <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold shrink-0 flex items-center gap-1">
-      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE ARENA
-    </span>
-    <div id="globalFeedText" class="text-slate-300 truncate mono">
-      System Bot AI (50% Calibrated Hit Rate) is online and ready for all commanders!
-    </div>
-  </div>
-</div>
-
-<!-- MAIN ARENA CONTAINER -->
-<main class="max-w-7xl mx-auto px-4 mt-2">
-  <!-- TOP HUD: PLAYER vs BOT -->
-  <div class="grid grid-cols-12 gap-2.5 mb-3">
-    <!-- Player Card -->
-    <div class="col-span-5 bg-slate-900/85 border border-slate-700/80 rounded-2xl p-3 shadow-lg">
-      <div class="flex justify-between items-center gap-1">
-        <div class="truncate">
-          <div class="font-bold text-sm sm:text-base text-white truncate" id="hudPlayerName">COMMANDER CAT</div>
-          <div class="text-[11px] text-cyan-300 truncate" id="hudPlayerSub">SHADOW · STANDARD CANNON</div>
-        </div>
-        <div class="mono font-bold text-sm sm:text-base text-emerald-400" id="hudPlayerHPText">100 HP</div>
-      </div>
-      <div class="w-full h-3 bg-slate-800 rounded-full mt-2 overflow-hidden p-0.5 border border-slate-700">
-        <div id="hudPlayerHPBar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-300 transition-all duration-300" style="width:100%"></div>
-      </div>
-    </div>
-
-    <!-- Center Timer & Turn -->
-    <div class="col-span-2 bg-slate-900/90 border border-slate-700/80 rounded-2xl p-2 flex flex-col items-center justify-center text-center shadow-lg">
-      <span class="text-[10px] tracking-widest text-slate-400 uppercase">STAGE <b id="hudStage" class="text-white">01</b></span>
-      <strong id="hudTimer" class="mono text-lg sm:text-2xl text-[#ffd36a] leading-tight">10:00</strong>
-      <span id="hudTurn" class="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 mt-0.5 truncate max-w-full">YOUR TURN</span>
-    </div>
-
-    <!-- Bot Card -->
-    <div class="col-span-5 bg-slate-900/85 border border-slate-700/80 rounded-2xl p-3 shadow-lg text-right">
-      <div class="flex justify-between items-center gap-1 flex-row-reverse">
-        <div class="truncate">
-          <div class="font-bold text-sm sm:text-base text-rose-300 truncate" id="hudBotName">IRON PAW · SYSTEM AI</div>
-          <div class="text-[11px] text-slate-400 truncate" id="hudBotSub">TARGET ACCURACY: 50%</div>
-        </div>
-        <div class="mono font-bold text-sm sm:text-base text-rose-400" id="hudBotHPText">100 HP</div>
-      </div>
-      <div class="w-full h-3 bg-slate-800 rounded-full mt-2 overflow-hidden p-0.5 border border-slate-700">
-        <div id="hudBotHPBar" class="h-full rounded-full bg-gradient-to-r from-rose-500 to-orange-400 transition-all duration-300 ml-auto" style="width:100%"></div>
-      </div>
-    </div>
+<main class="wrap">
+  <div class="live-ticker">
+    <span class="live-dot"></span>
+    <span id="tickerText">LIVE ARENA: System AI Bot calibrated at 50.0% target hit accuracy. Ready for deployment!</span>
   </div>
 
-  <!-- GAME STAGE + SIDEBAR -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5">
-    <!-- 3D Viewport -->
-    <div class="lg:col-span-8 flex flex-col gap-2">
-      <div id="stageContainer">
-        <canvas id="threeCanvas"></canvas>
+  <section class="hud">
+    <div class="hudbox">
+      <div class="name" id="playerName">COMMANDER SHADOW</div>
+      <div class="sub">YOU · <span id="playerWeapon">STANDARD CANNON</span></div>
+      <div class="health"><i id="playerHealth"></i></div>
+    </div>
+    <div class="hudbox timer">
+      <small>ROUND TIME</small>
+      <strong id="timer">10:00</strong>
+      <div class="sub" id="turnLabel">YOUR TURN</div>
+    </div>
+    <div class="hudbox">
+      <div class="name">IRON PAW · SYSTEM AI</div>
+      <div class="sub">OPEN-AI BALLISTICS · 50% HIT</div>
+      <div class="health"><i id="enemyHealth"></i></div>
+    </div>
+  </section>
 
-        <!-- Dynamic Speech Bubbles -->
-        <div id="playerBubble" class="speech-bubble hidden">Meow! Ready to fire!</div>
-        <div id="botBubble" class="speech-bubble bot-bubble hidden">Target coordinates locked!</div>
+  <section class="gamegrid">
+    <div class="stage">
+      <canvas id="game" width="900" height="510"></canvas>
+      <div class="ai-bubble" id="aiBubble">
+        <b>IRON PAW · AI BOT</b>
+        <span id="aiSpeech">Meow! Calculating wind vectors... Prepare for a 50% precision strike!</span>
+      </div>
 
-        <!-- Floating Wind & Telemetry Overlay -->
-        <div class="absolute top-3 left-3 right-3 flex justify-between items-center pointer-events-none gap-2">
-          <div class="bg-slate-950/75 backdrop-blur-md border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs mono flex items-center gap-2">
-            <span class="text-slate-400">SCORE:</span>
-            <b id="hudScore" class="text-cyan-300">0</b>
+      <!-- START OVERLAY -->
+      <div class="overlay" id="startOverlay">
+        <div class="modal">
+          <h1>FLUTON CAT TANKS · 3D CHIBI</h1>
+          <p>Enter your Commander callsign to record your victories on the Global Leaderboard and battle the System AI Bot.</p>
+          <div class="input-group">
+            <label for="commanderInput">COMMANDER CALLSIGN</label>
+            <input id="commanderInput" type="text" maxlength="18" placeholder="Enter your name (e.g. Meww, CryptoCat)..." value="CatCommander">
           </div>
-          <div class="bg-slate-950/75 backdrop-blur-md border border-rose-500/40 px-3 py-1.5 rounded-xl text-[11px] mono hidden sm:flex items-center gap-1.5">
-            <span class="text-slate-400">BOT HIT RATE:</span>
-            <b id="hudBotAccuracy" class="text-rose-300">50% (0/0)</b>
-          </div>
-          <div class="bg-slate-950/75 backdrop-blur-md border border-amber-500/40 px-3.5 py-1.5 rounded-xl text-xs mono flex items-center gap-2 shadow-lg">
-            <span class="text-slate-300">WIND:</span>
-            <b id="hudWind" class="text-[#ffd36a] text-sm">→ 2.0</b>
-          </div>
-        </div>
-
-        <!-- Toast Notification -->
-        <div id="toastMsg" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-900/95 border border-cyan-400 text-cyan-200 px-4 py-2 rounded-full text-xs font-bold shadow-xl hidden z-20 whitespace-nowrap"></div>
-
-        <!-- START / PILOT & NAME MODAL -->
-        <div id="startModal" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 z-30 overflow-y-auto">
-          <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-700 rounded-3xl p-5 sm:p-6 max-w-xl w-full shadow-2xl my-auto">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-12 h-12 rounded-full bg-white p-1.5 shrink-0">
-                <svg viewBox="0 0 100 100" class="w-full h-full">
-                  <circle cx="50" cy="50" r="48" fill="#090d17"/>
-                  <path d="M22 46 L50 18 L78 46" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M52 42 L35 59 L52 76" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="66" cy="59" r="9" fill="none" stroke="#ffffff" stroke-width="6"/>
-                </svg>
-              </div>
-              <div>
-                <h2 class="text-xl sm:text-2xl font-bold text-white">CHOOSE YOUR 3D CAT PILOT</h2>
-                <p class="text-xs text-slate-400">Enter your commander callsign to rank on the Online Leaderboard</p>
-              </div>
+          <div class="cats" id="catChoices">
+            <div class="cat selected" data-cat="shadow">
+              <span class="art">🐈‍⬛</span>
+              <b>SHADOW</b>
+              <small>Balanced · Black Cat</small>
             </div>
-
-            <!-- Player Name Input -->
-            <div class="mb-4">
-              <label class="block text-xs font-bold text-cyan-300 mb-1 uppercase tracking-wider">Commander Name</label>
-              <input id="inputCommanderName" type="text" maxlength="18" placeholder="e.g., MeowDestroyer, CaptainFluton..." class="w-full px-4 py-2.5 rounded-xl bg-slate-800/90 border border-slate-600 text-white font-bold focus:outline-none focus:border-cyan-400 text-sm">
+            <div class="cat" data-cat="ember">
+              <span class="art">🦁</span>
+              <b>EMBER</b>
+              <small>Heavy Shell · +25% DMG</small>
             </div>
-
-            <!-- 3 Cat Pilots -->
-            <div class="grid grid-cols-3 gap-2.5 mb-5" id="catSelector">
-              <div data-cat="shadow" class="cat-card cursor-pointer rounded-2xl p-3 bg-slate-800/90 border-2 border-cyan-400 text-center transition hover:scale-[1.02]">
-                <div class="text-3xl mb-1">🐈‍⬛</div>
-                <div class="font-bold text-sm text-white">SHADOW</div>
-                <div class="text-[11px] text-cyan-300 mt-0.5">Balanced · Sturdy Armor</div>
-              </div>
-              <div data-cat="ember" class="cat-card cursor-pointer rounded-2xl p-3 bg-slate-800/60 border-2 border-slate-700 text-center transition hover:scale-[1.02]">
-                <div class="text-3xl mb-1">🦁</div>
-                <div class="font-bold text-sm text-amber-300">EMBER</div>
-                <div class="text-[11px] text-rose-300 mt-0.5">+25% Heavy Damage</div>
-              </div>
-              <div data-cat="pixel" class="cat-card cursor-pointer rounded-2xl p-3 bg-slate-800/60 border-2 border-slate-700 text-center transition hover:scale-[1.02]">
-                <div class="text-3xl mb-1">🐱</div>
-                <div class="font-bold text-sm text-emerald-300">PIXEL</div>
-                <div class="text-[11px] text-emerald-300 mt-0.5">Extended Aim Laser</div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-3">
-              <button id="btnOpenAIFromStart" class="px-4 py-3 rounded-xl bg-indigo-950 border border-indigo-500/50 text-xs font-bold text-indigo-200 hover:border-indigo-400">
-                🤖 System Bot 50%
-              </button>
-              <button id="btnStartBattle" class="btn-arcade flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-[#69e4e8] to-[#268da8] text-slate-950 font-extrabold text-sm sm:text-base tracking-wide">
-                🚀 ENTER 3D BATTLE
-              </button>
+            <div class="cat" data-cat="pixel">
+              <span class="art">🐱</span>
+              <b>PIXEL</b>
+              <small>Laser Sight · +5° Aim</small>
             </div>
           </div>
-        </div>
-
-        <!-- ARMORY SHOP MODAL -->
-        <div id="shopModal" class="absolute inset-0 bg-slate-950/88 backdrop-blur-md hidden items-center justify-center p-4 z-30 overflow-y-auto">
-          <div class="bg-slate-900 border border-slate-700 rounded-3xl p-5 max-w-lg w-full shadow-2xl my-auto">
-            <div class="flex justify-between items-center mb-2">
-              <h2 class="text-xl font-bold text-white">🛠️ CAT ARMORY WORKSHOP</h2>
-              <span class="mono text-sm font-bold text-[#ffd36a]" id="shopCoins">120 $FLUTON</span>
-            </div>
-            <p class="text-xs text-slate-400 mb-4">Upgrade your Chibi tank before entering the next stage!</p>
-            <div id="shopGrid" class="grid grid-cols-2 gap-2.5 mb-4"></div>
-            <button id="btnContinueNextStage" class="btn-arcade w-full py-3 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-extrabold text-sm">
-              DEPLOY TO NEXT STAGE ▶
-            </button>
-          </div>
-        </div>
-
-        <!-- END ROUND MODAL -->
-        <div id="endModal" class="absolute inset-0 bg-slate-950/88 backdrop-blur-md hidden items-center justify-center p-4 z-30">
-          <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-md w-full text-center shadow-2xl">
-            <div id="endEmoji" class="text-5xl mb-2">🏆</div>
-            <h2 id="endTitle" class="text-2xl font-extrabold text-white mb-1">VICTORY!</h2>
-            <p id="endDesc" class="text-xs text-slate-300 mb-4">You defeated Iron Paw AI and etched your name on the Online Leaderboard!</p>
-            <div class="bg-slate-800/80 rounded-2xl p-3 mb-4 space-y-1.5 text-sm">
-              <div class="flex justify-between"><span class="text-slate-400">Battle Reward:</span><b id="endReward" class="text-[#ffd36a] mono">+65 $FLUTON</b></div>
-              <div class="flex justify-between"><span class="text-slate-400">Total Leaderboard Score:</span><b id="endTotalScore" class="text-cyan-300 mono">1250 PTS</b></div>
-            </div>
-            <div class="flex gap-2.5">
-              <button id="btnViewRankAfterEnd" class="btn-arcade flex-1 py-3 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-200 font-bold text-xs">
-                🏆 LEADERBOARD
-              </button>
-              <button id="btnNextStage" class="btn-arcade flex-[2] py-3 rounded-xl bg-gradient-to-r from-[#69e4e8] to-[#268da8] text-slate-950 font-extrabold text-sm">
-                NEXT STAGE ▶
-              </button>
-            </div>
+          <div class="modalactions">
+            <button class="primary" id="startBtn">🚀 ENTER BATTLE</button>
           </div>
         </div>
       </div>
 
-      <!-- Camera Hint Bar -->
-      <div class="flex justify-between items-center text-[11px] text-slate-400 px-1">
-        <span>🖱️ Drag or swipe on the 3D arena to orbit camera · Scroll to Zoom</span>
-        <button id="btnResetCam" class="text-cyan-400 hover:underline font-semibold">Reset Camera</button>
+      <!-- SHOP OVERLAY -->
+      <div class="overlay" id="shopOverlay" style="display:none">
+        <div class="modal">
+          <h1>CAT ARMORY</h1>
+          <p>Upgrade your 3D Chibi Tank with your earned $FLUTON rewards before the next stage.</p>
+          <div class="statrow"><span>Available Balance</span><b id="shopBalance">120 $FLUTON</b></div>
+          <div class="shopgrid" id="shopItems"></div>
+          <div class="modalactions">
+            <button class="primary" id="skipShop">NEXT BATTLE ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- END OVERLAY -->
+      <div class="overlay" id="endOverlay" style="display:none">
+        <div class="modal">
+          <h1 id="endTitle">VICTORY!</h1>
+          <p id="endText">You defeated the System AI Bot!</p>
+          <div class="statrow"><span>Battle Reward</span><b id="rewardText">+65 $FLUTON</b></div>
+          <div class="statrow"><span>Leaderboard Score</span><b id="scoreSavedText">Synced to Online Rankings</b></div>
+          <div class="modalactions">
+            <button id="viewLbAfterEnd">🏆 VIEW RANKINGS</button>
+            <button id="nextStage" class="primary">NEXT STAGE ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD OVERLAY -->
+      <div class="overlay" id="lbOverlay" style="display:none">
+        <div class="modal">
+          <h1>🏆 HALL OF FAME</h1>
+          <p>Top Cat Tank Commanders ranked by Stage cleared and $FLUTON earned.</p>
+          <table class="lb-table">
+            <thead>
+              <tr><th>#</th><th>COMMANDER</th><th>PILOT</th><th>STAGE</th><th>$FLUTON</th></tr>
+            </thead>
+            <tbody id="lbBody"></tbody>
+          </table>
+          <div class="modalactions">
+            <button class="primary" id="closeLbBtn">CLOSE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SYSTEM AI CONFIG OVERLAY -->
+      <div class="overlay" id="aiOverlay" style="display:none">
+        <div class="modal">
+          <h1>🤖 SYSTEM AI BOT ENGINE</h1>
+          <p>The shared System Bot automatically solves ballistic trajectories with a calibrated <b>50% direct hit probability</b> for all players.</p>
+          <div class="input-group">
+            <label for="proxyInput">SHARED OPENAI WORKER PROXY URL (OPTIONAL)</label>
+            <input id="proxyInput" type="text" placeholder="https://fluton-cat-ai.your-name.workers.dev">
+          </div>
+          <p class="hint">Leave blank to use the built-in Tactical AI Brain & 50% Ballistic Solver with zero API cost.</p>
+          <div class="modalactions">
+            <button class="primary" id="saveAiBtn">SAVE & CLOSE</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT SIDEBAR: CONTROLS & LOGS -->
-    <aside class="lg:col-span-4 flex flex-col gap-3">
-      <!-- Fire Control Panel -->
-      <div class="bg-slate-900/85 border border-slate-700/80 rounded-2xl p-4 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="text-xs font-bold tracking-widest text-[#69e4e8] uppercase">🎯 ARTILLERY FIRE CONTROL</h3>
-          <span class="text-[11px] text-slate-400 mono">A/D · ↑/↓ · SPACE</span>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-3.5">
-          <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/70">
-            <div class="flex justify-between text-xs mb-1.5">
-              <span class="text-slate-300 font-semibold">ANGLE</span>
-              <b id="valAngle" class="mono text-cyan-300">45°</b>
-            </div>
-            <input id="sliderAngle" type="range" min="10" max="85" value="45">
+    <aside class="sidebar">
+      <div class="panel">
+        <h3>FIRE CONTROL</h3>
+        <div class="controls">
+          <div>
+            <label for="angle">ANGLE <b id="angleVal">45°</b></label>
+            <input id="angle" type="range" min="10" max="85" value="45">
           </div>
-          <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/70">
-            <div class="flex justify-between text-xs mb-1.5">
-              <span class="text-slate-300 font-semibold">POWER</span>
-              <b id="valPower" class="mono text-amber-300">65%</b>
-            </div>
-            <input id="sliderPower" type="range" min="20" max="100" value="65">
+          <div>
+            <label for="power">POWER <b id="powerVal">65%</b></label>
+            <input id="power" type="range" min="25" max="100" value="65">
           </div>
+          <button class="fire full" id="fireBtn">✦ FIRE CANNON</button>
+          <button id="leftBtn">◀ MOVE</button>
+          <button id="rightBtn">MOVE ▶</button>
         </div>
-
-        <!-- Fire Button -->
-        <button id="btnFire" class="btn-arcade fire-pulse w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#ff668e] via-[#e11d48] to-[#be123c] text-white font-extrabold text-base tracking-wider shadow-lg mb-2.5 flex items-center justify-center gap-2">
-          <span>💥 FIRE CAT CANNON</span>
-        </button>
-
-        <!-- Move Left / Right -->
-        <div class="grid grid-cols-2 gap-2.5">
-          <button id="btnMoveLeft" class="btn-arcade py-2.5 rounded-xl bg-slate-800 border border-slate-600 hover:border-cyan-400 text-xs font-bold text-slate-200">
-            ◀ REVERSE (A)
-          </button>
-          <button id="btnMoveRight" class="btn-arcade py-2.5 rounded-xl bg-slate-800 border border-slate-600 hover:border-cyan-400 text-xs font-bold text-slate-200">
-            ADVANCE (D) ▶
-          </button>
-        </div>
+        <p class="hint">Keys: <b>A / D</b> move, <b>Up / Down</b> angle, <b>Space</b> fire.</p>
       </div>
 
-      <!-- Tank Stats Panel -->
-      <div class="bg-slate-900/85 border border-slate-700/80 rounded-2xl p-4 shadow-lg">
-        <h3 class="text-xs font-bold tracking-widest text-[#69e4e8] uppercase mb-2.5">📊 TANK & SYSTEM BOT TELEMETRY</h3>
-        <div class="grid grid-cols-3 gap-2 text-center">
-          <div class="bg-slate-800/60 p-2 rounded-xl border border-slate-700/60">
-            <div class="text-[10px] text-slate-400">DAMAGE BONUS</div>
-            <b id="statDmg" class="mono text-sm text-rose-300">+0%</b>
-          </div>
-          <div class="bg-slate-800/60 p-2 rounded-xl border border-slate-700/60">
-            <div class="text-[10px] text-slate-400">9-LIFE SHIELD</div>
-            <b id="statShield" class="mono text-sm text-cyan-300">0</b>
-          </div>
-          <div class="bg-slate-800/60 p-2 rounded-xl border border-slate-700/60">
-            <div class="text-[10px] text-slate-400">SYSTEM BOT</div>
-            <b id="statBotMode" class="mono text-xs text-emerald-300">50% HIT AI</b>
-          </div>
-        </div>
+      <div class="panel">
+        <h3>BATTLE TELEMETRY</h3>
+        <div class="statrow"><span>Stage</span><b id="stageNo">01</b></div>
+        <div class="statrow"><span>Wind Vector</span><b id="wind">→ 1.5</b></div>
+        <div class="statrow"><span>Bot Hit Rate</span><b>50.0% AI</b></div>
+        <div class="statrow"><span>Damage Bonus</span><b id="damageBonus">0%</b></div>
+        <div class="statrow"><span>Armor Shield</span><b id="shieldStat">0</b></div>
       </div>
 
-      <!-- Battle & AI Tactical Log -->
-      <div class="bg-slate-900/85 border border-slate-700/80 rounded-2xl p-4 shadow-lg flex-1 flex flex-col min-h-[150px]">
-        <h3 class="text-xs font-bold tracking-widest text-[#69e4e8] uppercase mb-2">📡 BATTLEFIELD & AI COORDINATE LOG</h3>
-        <div id="combatLog" class="flex-1 max-h-40 overflow-y-auto space-y-1.5 text-xs text-slate-300 pr-1">
-          <div class="text-cyan-300">✦ 3D Chibi Engine & 50% Hit-Rate System Bot online for all commanders!</div>
-        </div>
+      <div class="panel">
+        <h3>COMBAT LOG</h3>
+        <div class="log" id="log"><div>System online. Enter your callsign to begin.</div></div>
       </div>
     </aside>
-  </div>
+  </section>
 </main>
 
-<!-- MODAL: SYSTEM BOT & OPENAI HOST SETTINGS -->
-<div id="aiModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-  <div class="bg-slate-900 border border-indigo-500/50 rounded-3xl p-6 max-w-md w-full shadow-2xl">
-    <div class="flex justify-between items-center mb-3">
-      <h2 class="text-lg font-bold text-white flex items-center gap-2">🤖 SHARED SYSTEM BOT AI</h2>
-      <button id="closeAiModal" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-    </div>
-    <div class="bg-emerald-950/60 border border-emerald-500/40 rounded-xl p-3 text-xs text-emerald-200 mb-3 space-y-1">
-      <div class="font-bold text-emerald-300">✅ Default Shared Mode for All Players:</div>
-      <p>Players do <b>NOT need an API Key</b>. The System Bot automatically computes ballistic coordinates accounting for wind and terrain with a balanced <b>50% target hit accuracy</b>.</p>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-relaxed mb-3">
-      <b>For Game Host / Admin:</b> To enable live <b>OpenAI GPT-4o-mini</b> tactical banter for all public players on GitHub without exposing your secret key, enter your <b>OpenAI Proxy Endpoint</b> (Cloudflare Worker / Vercel) or test key below:
-    </p>
-    <div class="space-y-2.5 mb-4">
-      <div>
-        <label class="block text-[11px] font-bold text-cyan-300 mb-1">System OpenAI Proxy URL (Recommended for Public Hosting)</label>
-        <input id="inputProxyUrl" type="url" placeholder="https://your-worker.workers.dev/bot-turn" class="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-600 text-white mono text-xs focus:outline-none focus:border-cyan-400">
-      </div>
-      <div>
-        <label class="block text-[11px] font-bold text-indigo-300 mb-1">Or Direct OpenAI API Key (Host Local Testing)</label>
-        <input id="inputOpenAIKey" type="password" placeholder="sk-proj-..." class="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-600 text-white mono text-xs focus:outline-none focus:border-indigo-400">
-      </div>
-    </div>
-    <div class="flex gap-2 justify-end">
-      <button id="btnClearAIKey" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:text-white">Reset Default</button>
-      <button id="btnSaveAIKey" class="btn-arcade px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">SAVE CONFIG</button>
-    </div>
-  </div>
-</div>
+<script>
+(() => {
+  // =========================================================================
+  // 1. SHARED SYSTEM CONFIG (Set your Cloudflare OpenAI Proxy URL here if desired)
+  // =========================================================================
+  let SYSTEM_OPENAI_PROXY_URL = localStorage.getItem('fluton_proxy_url') || "";
 
-<!-- MODAL: ONLINE LEADERBOARD -->
-<div id="leaderboardModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-  <div class="bg-slate-900 border border-amber-500/50 rounded-3xl p-6 max-w-lg w-full shadow-2xl">
-    <div class="flex justify-between items-center mb-2">
-      <h2 class="text-lg font-bold text-[#ffd36a] flex items-center gap-2">🏆 GLOBAL ONLINE LEADERBOARD</h2>
-      <button id="closeLeaderboardModal" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-    </div>
-    <div class="flex items-center justify-between text-[11px] text-slate-400 mb-3">
-      <span id="syncStatusText">🟢 Real-time Cloud Sync</span>
-      <span>Ranked by Combat Score</span>
-    </div>
-    <div class="bg-slate-950/80 border border-slate-800 rounded-2xl overflow-hidden max-h-72 overflow-y-auto">
-      <table class="w-full text-left text-xs">
-        <thead class="bg-slate-800/90 text-slate-300 uppercase text-[10px]">
-          <tr>
-            <th class="py-2.5 px-3">#</th>
-            <th class="py-2.5 px-3">Commander</th>
-            <th class="py-2.5 px-3">Tank</th>
-            <th class="py-2.5 px-3 text-right">Stage</th>
-            <th class="py-2.5 px-3 text-right">Score</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboardBody" class="divide-y divide-slate-800/80">
-          <tr><td colspan="5" class="py-6 text-center text-slate-400">Loading leaderboard rankings...</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="mt-4 text-right">
-      <button id="btnCloseRank" class="btn-arcade px-5 py-2 rounded-xl bg-slate-800 border border-slate-600 text-xs font-bold text-white">CLOSE</button>
-    </div>
-  </div>
-</div>
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const $ = id => document.getElementById(id);
 
-<!-- FIREBASE + GAME ENGINE SCRIPT -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  const W = 900, H = 510;
+  const GRAVITY = 0.18;
+  const ground = [];
 
-// ============================================================================
-// 1. ONLINE LEADERBOARD SERVICE (FIREBASE FIRESTORE + GITHUB PAGES FALLBACK)
-// ============================================================================
-class LeaderboardManager {
-  constructor() {
-    this.db = null;
-    this.userId = null;
-    this.appId = typeof __app_id !== 'undefined' ? __app_id : 'fluton-cat-tanks-3d';
-    this.records = [];
-    this.isCloud = false;
-    this.localKey = 'fluton_cat_tanks_leaderboard_v1';
-    this.seedDefaults();
-    this.initFirebase();
-  }
+  const CATS = {
+    shadow: { name: 'SHADOW', color: '#1b2234', turret: '#39a396', damage: 1.0, aim: 0, icon: '🐈‍⬛' },
+    ember:  { name: 'EMBER',  color: '#6e2c1e', turret: '#e87a3e', damage: 1.25, aim: 0, icon: '🦁' },
+    pixel:  { name: 'PIXEL',  color: '#25395c', turret: '#59b4ff', damage: 1.0, aim: 5, icon: '🐱' }
+  };
 
-  seedDefaults() {
-    const saved = localStorage.getItem(this.localKey);
-    if (saved) {
-      try { this.records = JSON.parse(saved); } catch (e) { this.records = []; }
+  let state = {
+    started: false,
+    over: false,
+    turn: 'player',
+    turnLock: false,
+    commander: 'CatCommander',
+    selected: 'shadow',
+    playerHP: 100,
+    enemyHP: 100,
+    playerX: 170,
+    enemyX: 730,
+    wheelSpinP: 0,
+    wheelSpinE: 0,
+    angle: 45,
+    power: 65,
+    enemyAngle: 135,
+    wind: 1.5,
+    coins: 120,
+    stage: 1,
+    seconds: 600,
+    damage: 0,
+    shield: 0,
+    projectile: null,
+    trail: [],
+    explosions: [],
+    particles: [],
+    shopBought: {},
+    soundOn: true,
+    shake: 0
+  };
+
+  // =========================================================================
+  // 2. WEB AUDIO SYNTHESIZER (Fun Chibi Sound Effects & Background Pulse)
+  // =========================================================================
+  let audioCtx = null;
+  let bgmTimer = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
     }
-    if (!this.records || this.records.length === 0) {
-      this.records = [
-        { id: 'seed-1', name: 'FlutonMaster', cat: 'EMBER', stage: 5, score: 2450, coins: 420 },
-        { id: 'seed-2', name: 'MeoBaoTap', cat: 'SHADOW', stage: 4, score: 1820, coins: 310 },
-        { id: 'seed-3', name: 'NekoSniper', cat: 'PIXEL', stage: 3, score: 1340, coins: 245 },
-        { id: 'seed-4', name: 'IronPaw_Bot', cat: 'EMBER', stage: 2, score: 890, coins: 160 }
-      ];
-      localStorage.setItem(this.localKey, JSON.stringify(this.records));
-    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   }
 
-  async initFirebase() {
-    try {
-      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        this.db = getFirestore(app);
-
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          await signInAnonymously(auth);
-        }
-        this.userId = auth.currentUser?.uid || ('anon-' + Math.random().toString(36).slice(2, 9));
-        this.isCloud = true;
-        document.getElementById('syncStatusText').textContent = '🟢 Connected to Cloud Online';
-
-        const colRef = collection(this.db, 'artifacts', this.appId, 'public', 'data', 'leaderboard');
-        onSnapshot(colRef, (snapshot) => {
-          const cloudList = [];
-          snapshot.forEach(d => cloudList.push({ id: d.id, ...d.data() }));
-          if (cloudList.length > 0) {
-            this.records = cloudList;
-            this.render();
-          }
-        }, (err) => {
-          console.warn('Firestore snapshot fallback:', err);
-          this.isCloud = false;
-        });
-
-        // Listen to shared Global Live Arena Events across all players
-        const eventsRef = collection(this.db, 'artifacts', this.appId, 'public', 'data', 'arena_events');
-        onSnapshot(eventsRef, (snapshot) => {
-          const events = [];
-          snapshot.forEach(d => events.push(d.data()));
-          if (events.length > 0) {
-            events.sort((a, b) => (b.ts || 0) - (a.ts || 0));
-            const latest = events[0];
-            if (latest && latest.text) {
-              document.getElementById('globalFeedText').textContent = latest.text;
-            }
-          }
-        }, () => {});
-      } else {
-        document.getElementById('syncStatusText').textContent = '🟡 GitHub LocalSync Mode';
-      }
-    } catch (e) {
-      console.warn('Running in standalone GitHub Pages mode:', e);
-      document.getElementById('syncStatusText').textContent = '🟡 GitHub LocalSync Mode';
-    }
-    this.render();
+  function playTone(freq, type, duration, vol = 0.12, slideTo = null) {
+    if (!state.soundOn) return;
+    initAudio();
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
   }
 
-  async broadcastEvent(text) {
-    document.getElementById('globalFeedText').textContent = text;
-    if (this.isCloud && this.db && this.userId) {
-      try {
-        const evRef = doc(this.db, 'artifacts', this.appId, 'public', 'data', 'arena_events', 'latest_global_event');
-        await setDoc(evRef, { text, ts: Date.now() }, { merge: true });
-      } catch (e) { /* ignore non-critical feed errors */ }
-    }
-  }
+  const SFX = {
+    meow: () => {
+      playTone(540, 'triangle', 0.18, 0.12, 780);
+      setTimeout(() => playTone(760, 'triangle', 0.22, 0.10, 480), 120);
+    },
+    fire: () => {
+      playTone(220, 'sawtooth', 0.28, 0.18, 55);
+      playTone(420, 'square', 0.12, 0.08, 120);
+    },
+    boom: () => {
+      playTone(110, 'sawtooth', 0.45, 0.25, 28);
+      playTone(75, 'square', 0.40, 0.20, 22);
+    },
+    coin: () => {
+      playTone(880, 'sine', 0.12, 0.12);
+      setTimeout(() => playTone(1175, 'sine', 0.22, 0.14), 90);
+    },
+    move: () => playTone(140, 'triangle', 0.06, 0.05, 110)
+  };
 
-  render() {
-    const tbody = document.getElementById('leaderboardBody');
-    if (!tbody) return;
-    const sorted = [...this.records].sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 15);
-    tbody.innerHTML = sorted.map((row, index) => {
-      const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `<span class="text-slate-500 mono">${index + 1}</span>`;
-      const catColor = row.cat === 'EMBER' ? 'text-amber-300' : row.cat === 'PIXEL' ? 'text-emerald-300' : 'text-cyan-300';
-      return `
-        <tr class="hover:bg-slate-800/50 transition">
-          <td class="py-2.5 px-3 font-bold">${medal}</td>
-          <td class="py-2.5 px-3 font-bold text-white">${this.escapeHtml(row.name)}</td>
-          <td class="py-2.5 px-3 text-[11px] font-bold ${catColor}">${this.escapeHtml(row.cat || 'SHADOW')}</td>
-          <td class="py-2.5 px-3 text-right mono text-slate-300">S${String(row.stage || 1).padStart(2, '0')}</td>
-          <td class="py-2.5 px-3 text-right mono font-bold text-[#ffd36a]">${(row.score || 0).toLocaleString()}</td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
-  }
-}
-
-// ============================================================================
-// 2. WEB AUDIO SYNTHESIZER (MUSIC & SOUND EFFECTS - NO EXTERNAL ASSETS)
-// ============================================================================
-class SoundEngine {
-  constructor() {
-    this.ctx = null;
-    this.muted = false;
-    this.bgmTimer = null;
-    this.step = 0;
-  }
-
-  ensureCtx() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AudioCtx();
-    }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-  }
-
-  toggleMute() {
-    this.muted = !this.muted;
-    const btn = document.getElementById('btnMusic');
-    if (btn) {
-      btn.innerHTML = this.muted
-        ? `<span>🔇</span> <span class="hidden sm:inline">MUSIC: OFF</span>`
-        : `<span>🔊</span> <span class="hidden sm:inline">MUSIC: ON</span>`;
-    }
-    if (this.muted) {
-      this.stopBGM();
-    } else {
-      this.startBGM();
-    }
-  }
-
-  playTone(freq, type = 'sine', duration = 0.15, vol = 0.12, slideTo = null) {
-    if (this.muted) return;
-    try {
-      this.ensureCtx();
-      const now = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, now);
-      if (slideTo) {
-        osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
-      }
-      gain.gain.setValueAtTime(vol, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(now);
-      osc.stop(now + duration);
-    } catch (e) { /* ignore audio autoplay block until user interacts */ }
-  }
-
-  playMeow(baseFreq = 460) {
-    this.playTone(baseFreq, 'triangle', 0.24, 0.14, baseFreq * 1.38);
-    setTimeout(() => this.playTone(baseFreq * 1.35, 'sine', 0.22, 0.11, baseFreq * 0.85), 110);
-  }
-
-  playFire() {
-    this.playTone(210, 'sawtooth', 0.28, 0.18, 48);
-    this.playTone(520, 'square', 0.12, 0.08, 120);
-  }
-
-  playExplosion() {
-    if (this.muted) return;
-    try {
-      this.ensureCtx();
-      const now = this.ctx.currentTime;
-      const bufferSize = this.ctx.sampleRate * 0.45;
-      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.14));
-      }
-      const noise = this.ctx.createBufferSource();
-      noise.buffer = buffer;
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(680, now);
-      filter.frequency.exponentialRampToValueAtTime(90, now + 0.42);
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.32, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.44);
-
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.ctx.destination);
-      noise.start(now);
-    } catch (e) {}
-  }
-
-  playCoin() {
-    this.playTone(880, 'sine', 0.11, 0.12);
-    setTimeout(() => this.playTone(1320, 'sine', 0.2, 0.12), 85);
-  }
-
-  startBGM() {
-    if (this.muted || this.bgmTimer) return;
-    const melody = [330, 392, 494, 523, 494, 392, 330, 294, 330, 392, 587, 523, 494, 392, 330, 0];
-    this.bgmTimer = setInterval(() => {
-      if (this.muted) return;
-      const note = melody[this.step % melody.length];
-      if (note > 0) {
-        this.playTone(note, 'triangle', 0.22, 0.035);
-      }
-      if (this.step % 4 === 0) {
-        this.playTone(110, 'sine', 0.28, 0.045, 75);
-      }
-      this.step++;
+  function startBgm() {
+    clearInterval(bgmTimer);
+    const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 392.00];
+    let step = 0;
+    bgmTimer = setInterval(() => {
+      if (!state.started || !state.soundOn || state.over) return;
+      playTone(notes[step % notes.length], 'triangle', 0.16, 0.035);
+      step++;
     }, 340);
   }
 
-  stopBGM() {
-    clearInterval(this.bgmTimer);
-    this.bgmTimer = null;
-  }
-}
-
-// ============================================================================
-// 3. SYSTEM BOT AI ENGINE (50% CALIBRATED TARGETING + OPENAI PROXY / API)
-// ============================================================================
-// Game host can paste their Cloudflare Worker / Vercel Proxy URL here
-// so all public players share OpenAI AI banter without exposing the secret key:
-const SYSTEM_OPENAI_PROXY_URL = "";
-
-class BotBrain {
-  constructor() {
-    this.proxyUrl = localStorage.getItem('fluton_openai_proxy') || SYSTEM_OPENAI_PROXY_URL;
-    this.apiKey = localStorage.getItem('fluton_openai_key') || '';
-    this.shotsFired = 0;
-    this.shotsHit = 0;
-    this.shotDeck = []; // Balanced 50/50 shuffle deck so accuracy stays right around 50%
-    this.tauntsHit = [
-      "Coordinates (X,Y) locked! Eat shells, little kitty! 🎯",
-      "Wind compensation calculated to perfection — Direct hit! 💥",
-      "My 50% hit probability just landed right on your turret!",
-      "Parabolic trajectory accurate to the millimeter! Meow haha! 🚀"
-    ];
-    this.tauntsMiss = [
-      "So close! A sudden gust of wind nudged my coordinates! 💨",
-      "Warning shot fired! Next round lands straight on your hull!",
-      "Range calibrated! Nowhere left to hide next turn! 😼",
-      "Missed by a whisker! Don't celebrate too soon!"
-    ];
-  }
-
-  setConfig(proxyUrl, key) {
-    this.proxyUrl = (proxyUrl || '').trim();
-    this.apiKey = (key || '').trim();
-    if (this.proxyUrl) localStorage.setItem('fluton_openai_proxy', this.proxyUrl);
-    else localStorage.removeItem('fluton_openai_proxy');
-
-    if (this.apiKey) localStorage.setItem('fluton_openai_key', this.apiKey);
-    else localStorage.removeItem('fluton_openai_key');
-    this.updateBadge();
-  }
-
-  updateBadge() {
-    const badge = document.getElementById('aiBadge');
-    const stat = document.getElementById('statBotMode');
-    if (this.proxyUrl || this.apiKey) {
-      badge.className = 'w-2 h-2 rounded-full bg-indigo-400 animate-ping';
-      stat.textContent = 'GPT + 50% AI';
-    } else {
-      badge.className = 'w-2 h-2 rounded-full bg-emerald-400';
-      stat.textContent = '50% HIT AI';
+  // =========================================================================
+  // 3. 3D CHIBI TERRAIN & ISOMETRIC EXTRUDED RENDERER
+  // =========================================================================
+  function generateTerrain() {
+    ground.length = 0;
+    const phase = Math.random() * 10;
+    for (let x = 0; x <= W; x++) {
+      const y = 365
+        + Math.sin(x * 0.011 + phase) * 20
+        + Math.cos(x * 0.028) * 10
+        + Math.sin(x * 0.005) * 22;
+      ground[x] = Math.max(280, Math.min(425, y));
     }
   }
 
-  // Balanced 50% roll (uses shuffled 4-shot bag [HIT, HIT, MISS, MISS] so players experience true 50% fairness)
-  rollFiftyPercentHit() {
-    if (this.shotDeck.length === 0) {
-      this.shotDeck = [true, true, false, false];
-      for (let i = this.shotDeck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [this.shotDeck[i], this.shotDeck[j]] = [this.shotDeck[j], this.shotDeck[i]];
+  function surfaceY(x) {
+    const idx = Math.max(0, Math.min(W, Math.round(x)));
+    return ground[idx] || 365;
+  }
+
+  function createCrater(cx, r) {
+    for (let x = Math.max(0, Math.floor(cx - r)); x <= Math.min(W, Math.ceil(cx + r)); x++) {
+      const dx = x - cx;
+      const depth = Math.sqrt(Math.max(0, r * r - dx * dx)) * 0.72;
+      ground[x] = Math.min(H - 18, ground[x] + depth);
+    }
+  }
+
+  function drawChibiTank3D(x, isEnemy) {
+    const y = surfaceY(x);
+    const dir = isEnemy ? -1 : 1;
+    const catCfg = isEnemy ? { color: '#261829', turret: '#d9486e' } : CATS[state.selected];
+    const spin = isEnemy ? state.wheelSpinE : state.wheelSpinP;
+    const aimRad = isEnemy ? ((180 - state.enemyAngle) * Math.PI / 180) : (state.angle * Math.PI / 180);
+
+    ctx.save();
+    ctx.translate(x, y);
+
+    // 3D Ground Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+    ctx.beginPath();
+    ctx.ellipse(0, 4, 48, 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.scale(dir, 1);
+
+    // 3D Track Back Depth (Extrusion)
+    ctx.fillStyle = '#111827';
+    ctx.beginPath();
+    ctx.roundRect(-38, -24, 80, 22, 11);
+    ctx.fill();
+
+    // 3D Track Front Chassis
+    const trackGrad = ctx.createLinearGradient(0, -22, 0, 2);
+    trackGrad.addColorStop(0, '#33445e');
+    trackGrad.addColorStop(1, '#182233');
+    ctx.fillStyle = trackGrad;
+    ctx.strokeStyle = '#6b85a8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(-42, -20, 80, 22, 11);
+    ctx.fill();
+    ctx.stroke();
+
+    // Animated 3D Chibi Wheels
+    for (let i = -27; i <= 27; i += 18) {
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(i, -9, 6.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#7dd3fc';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(i, -9, 4.5, spin, spin + Math.PI * 1.3);
+      ctx.stroke();
+    }
+
+    // 3D Chibi Cannon Barrel (Rotates smoothly with Angle)
+    ctx.save();
+    ctx.translate(4, -30);
+    ctx.rotate(-aimRad);
+    const barrelGrad = ctx.createLinearGradient(0, -6, 0, 6);
+    barrelGrad.addColorStop(0, '#94a3b8');
+    barrelGrad.addColorStop(0.5, '#334155');
+    barrelGrad.addColorStop(1, '#0f172a');
+    ctx.fillStyle = barrelGrad;
+    ctx.beginPath();
+    ctx.roundRect(0, -6, 44, 12, 5);
+    ctx.fill();
+    // Muzzle Ring
+    ctx.fillStyle = isEnemy ? '#ff6b93' : '#69e4e8';
+    ctx.fillRect(38, -7, 6, 14);
+    ctx.restore();
+
+    // 3D Rounded Chibi Turret Hull (with highlight rim)
+    ctx.fillStyle = '#0e1726';
+    ctx.beginPath();
+    ctx.roundRect(-24, -40, 52, 24, 12);
+    ctx.fill();
+
+    const hullGrad = ctx.createLinearGradient(-25, -42, 25, -18);
+    hullGrad.addColorStop(0, catCfg.turret);
+    hullGrad.addColorStop(1, '#1a2b42');
+    ctx.fillStyle = hullGrad;
+    ctx.beginPath();
+    ctx.roundRect(-28, -38, 52, 23, 12);
+    ctx.fill();
+
+    // Glossy 3D Specular Highlight on Turret
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.beginPath();
+    ctx.ellipse(-4, -33, 16, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Fluton Emblem Badge on Hull
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(-2, -26, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#090d17';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-5, -25);
+    ctx.lineTo(-2, -29);
+    ctx.lineTo(1, -25);
+    ctx.stroke();
+
+    // 3D Chibi Cat Pilot Head (Oversized cute head + 3D shading)
+    const headGrad = ctx.createRadialGradient(-4, -56, 4, 0, -52, 24);
+    headGrad.addColorStop(0, '#3a4866');
+    headGrad.addColorStop(0.5, catCfg.color);
+    headGrad.addColorStop(1, '#090d16');
+    ctx.fillStyle = headGrad;
+
+    // Ears
+    ctx.beginPath();
+    ctx.moveTo(-18, -54);
+    ctx.lineTo(-17, -75);
+    ctx.lineTo(-3, -63);
+    ctx.lineTo(11, -75);
+    ctx.lineTo(17, -54);
+    ctx.closePath();
+    ctx.fill();
+
+    // Inner Pink Ears
+    ctx.fillStyle = '#ff9ebb';
+    ctx.beginPath();
+    ctx.moveTo(-14, -57);
+    ctx.lineTo(-14, -69);
+    ctx.lineTo(-6, -61);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(6, -61);
+    ctx.lineTo(14, -69);
+    ctx.lineTo(13, -57);
+    ctx.fill();
+
+    // Chibi Puffy Cheeks Head Sphere
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, -50, 20, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Glowing Chibi Eyes
+    ctx.fillStyle = isEnemy ? '#ff5c8a' : '#7df9e8';
+    ctx.beginPath();
+    ctx.ellipse(-6, -50, 3.3, 4.5, 0, 0, Math.PI * 2);
+    ctx.ellipse(8, -50, 3.3, 4.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cute Eye Sparkles
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(-7, -52, 1.3, 0, Math.PI * 2);
+    ctx.arc(7, -52, 1.3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cute Cat Mouth (:3)
+    ctx.strokeStyle = '#ffd1e0';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-2, -44);
+    ctx.quadraticCurveTo(0, -41, 2, -44);
+    ctx.quadraticCurveTo(4, -41, 6, -44);
+    ctx.stroke();
+
+    // Energy Shield Dome if active
+    if (!isEnemy && state.shield > 0) {
+      ctx.strokeStyle = 'rgba(105, 228, 232, 0.65)';
+      ctx.fillStyle = 'rgba(105, 228, 232, 0.10)';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(0, -34, 52, Math.PI, 0);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function renderScene() {
+    ctx.save();
+    if (state.shake > 0) {
+      const dx = (Math.random() - 0.5) * state.shake;
+      const dy = (Math.random() - 0.5) * state.shake;
+      ctx.translate(dx, dy);
+      state.shake *= 0.85;
+      if (state.shake < 0.4) state.shake = 0;
+    }
+
+    // Deep Cosmic Sky Gradient
+    const sky = ctx.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, '#0c1c33');
+    sky.addColorStop(0.58, '#1d3554');
+    sky.addColorStop(1, '#122236');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, W, H);
+
+    // Floating 3D Planets & Stars
+    ctx.fillStyle = 'rgba(105, 228, 232, 0.12)';
+    ctx.beginPath();
+    ctx.arc(140, 95, 36, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (let i = 0; i < 45; i++) {
+      const sx = (i * 197) % W;
+      const sy = (i * 73) % 240;
+      ctx.fillStyle = i % 3 === 0 ? '#ffd36a' : '#bce6ff';
+      ctx.globalAlpha = 0.25 + (i % 5) * 0.12;
+      ctx.fillRect(sx, sy, 2.2, 2.2);
+    }
+    ctx.globalAlpha = 1;
+
+    // Distant Parallax Mountain Ridge
+    ctx.fillStyle = '#1b2f47';
+    ctx.beginPath();
+    ctx.moveTo(0, 310);
+    for (let x = 0; x <= W; x += 15) {
+      ctx.lineTo(x, 295 + Math.sin(x * 0.008) * 24 + Math.cos(x * 0.022) * 14);
+    }
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.fill();
+
+    // 3D Extruded Terrain Top Rim (Depth Illusion)
+    ctx.beginPath();
+    ctx.moveTo(0, ground[0] - 8);
+    for (let x = 0; x <= W; x += 4) ctx.lineTo(x, ground[x] - 8);
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.fillStyle = '#57c496';
+    ctx.fill();
+
+    // Front Terrain Cross-Section
+    ctx.beginPath();
+    ctx.moveTo(0, ground[0]);
+    for (let x = 0; x <= W; x += 4) ctx.lineTo(x, ground[x]);
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.closePath();
+    const soil = ctx.createLinearGradient(0, 310, 0, H);
+    soil.addColorStop(0, '#c4864d');
+    soil.addColorStop(0.45, '#7a4d34');
+    soil.addColorStop(1, '#2d2124');
+    ctx.fillStyle = soil;
+    ctx.fill();
+
+    // Crisp Grass Border
+    ctx.strokeStyle = '#8ef5c2';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 4) ctx.lineTo(x, ground[x]);
+    ctx.stroke();
+
+    // Draw Both 3D Chibi Tanks
+    drawChibiTank3D(state.playerX, false);
+    drawChibiTank3D(state.enemyX, true);
+
+    // Dotted Trajectory Preview for Player
+    if (state.started && state.turn === 'player' && !state.projectile && !state.over) {
+      const a = state.angle * Math.PI / 180;
+      const spd = state.power * 0.23;
+      let px = state.playerX + Math.cos(a) * 44;
+      let py = surfaceY(state.playerX) - 30 - Math.sin(a) * 44;
+      let vx = Math.cos(a) * spd;
+      let vy = -Math.sin(a) * spd;
+
+      ctx.fillStyle = '#75f3df';
+      for (let t = 0; t < 18; t++) {
+        vy += GRAVITY;
+        vx += state.wind * 0.0025;
+        px += vx;
+        py += vy;
+        ctx.globalAlpha = 1 - t / 20;
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fill();
       }
+      ctx.globalAlpha = 1;
     }
-    return this.shotDeck.pop();
+
+    // Projectile Trail & Glowing 3D Shell
+    state.trail.forEach((pt, idx) => {
+      ctx.globalAlpha = (idx / state.trail.length) * 0.6;
+      ctx.fillStyle = '#ffd36a';
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 4 * (idx / state.trail.length), 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    if (state.projectile) {
+      ctx.fillStyle = '#fff5ad';
+      ctx.shadowColor = '#ff7b39';
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.arc(state.projectile.x, state.projectile.y, 7.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    // 3D Shockwave Explosions & Sparks
+    for (let i = state.explosions.length - 1; i >= 0; i--) {
+      const e = state.explosions[i];
+      const prog = 1 - e.life / 26;
+      ctx.globalAlpha = Math.max(0, e.life / 26);
+      ctx.fillStyle = '#ff9e44';
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.r * prog, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#fff3b0';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.r * prog * 1.15, 0, Math.PI * 2);
+      ctx.stroke();
+
+      e.life--;
+      if (e.life <= 0) state.explosions.splice(i, 1);
+    }
+
+    for (let i = state.particles.length - 1; i >= 0; i--) {
+      const pt = state.particles[i];
+      pt.x += pt.vx;
+      pt.y += pt.vy;
+      pt.vy += 0.15;
+      pt.life--;
+      ctx.globalAlpha = Math.max(0, pt.life / 30);
+      ctx.fillStyle = pt.color;
+      ctx.fillRect(pt.x, pt.y, 4, 4);
+      if (pt.life <= 0) state.particles.splice(i, 1);
+    }
+    ctx.globalAlpha = 1;
+
+    // On-Canvas Telemetry Overlay
+    ctx.fillStyle = '#d8e8fa';
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText(`POS X:${Math.round(state.playerX)}  Y:${Math.round(surfaceY(state.playerX))}`, 16, 24);
+    ctx.fillStyle = '#ffd36a';
+    ctx.fillText(`WIND ${state.wind >= 0 ? '→ ' : '← '}${Math.abs(state.wind).toFixed(1)}`, W - 125, 24);
+
+    ctx.restore();
+    requestAnimationFrame(renderScene);
   }
 
-  // Exact physics ballistic solver computing trajectory to target coordinate (targetX, targetY)
-  solveBallisticsForTarget(botX, botY, targetX, targetY, wind) {
-    let bestAngle = 52;
-    let bestPower = 65;
-    let minError = Infinity;
+  // =========================================================================
+  // 4. SYSTEM AI BOT ENGINE (50% EXACT BALLISTICS + OPENAI PROXY SUPPORT)
+  // =========================================================================
+  function solveBallisticPower(startX, startY, targetX, targetY, angleDeg, wind) {
+    const a = angleDeg * Math.PI / 180;
+    let bestPower = 60;
+    let bestErr = Infinity;
 
-    for (let angle = 24; angle <= 78; angle += 1) {
-      for (let power = 24; power <= 98; power += 1) {
-        const rad = (angle * Math.PI) / 180;
-        const speed = power * 0.23;
-        let x = botX - Math.cos(rad) * 2.2;
-        let y = botY + 1.8;
-        let vx = -Math.cos(rad) * speed * 0.11;
-        let vy = Math.sin(rad) * speed * 0.11;
+    for (let p = 25; p <= 105; p += 0.5) {
+      const spd = p * 0.23;
+      let x = startX - Math.cos(a) * 44;
+      let y = startY - 30 - Math.sin(a) * 44;
+      let vx = -Math.cos(a) * spd;
+      let vy = -Math.sin(a) * spd;
 
-        for (let step = 0; step < 260; step++) {
-          vy -= 0.016;
-          vx += wind * 0.00022;
-          x += vx;
-          y += vy;
-          const dist = Math.hypot(x - targetX, y - (targetY + 1.1));
-          if (dist < minError) {
-            minError = dist;
-            bestAngle = angle;
-            bestPower = power;
-          }
-          if (y < targetY - 2.5 || x < -26) break;
+      for (let step = 0; step < 220; step++) {
+        vy += GRAVITY;
+        vx += wind * 0.0025;
+        x += vx;
+        y += vy;
+        const dist = Math.hypot(x - targetX, y - (targetY - 24));
+        if (dist < bestErr) {
+          bestErr = dist;
+          bestPower = p;
         }
+        if (y > surfaceY(x) || x < 0) break;
       }
     }
-    return { angle: bestAngle, power: bestPower, error: minError };
+    return bestPower;
   }
 
-  async decideTurn(context) {
-    const moveStep = Math.random() > 0.5 ? (Math.random() > 0.5 ? 1.4 : -1.4) : 0;
-    const effectiveBotX = Math.max(3.5, Math.min(21, context.botX + moveStep));
-    const effectiveBotY = getTerrainY(effectiveBotX);
+  async function triggerBotDialogue(isHitRoll, distance) {
+    const fallbackQuotes = isHitRoll
+      ? [
+          `Target locked at X:${Math.round(state.playerX)}! 50% precision protocol engaged!`,
+          `Wind compensated. Calculating direct impact on ${state.commander}!`,
+          `My neural sensors show a 50% hit window—taking the shot!`
+        ]
+      : [
+          `Calibration variance! Firing warning shell near your tracks!`,
+          `Crosswind shift detected—adjusting trajectory matrix!`,
+          `Stay sharp, ${state.commander}! Next volley won't miss!`
+        ];
 
-    // 1. Roll calibrated 50% hit probability
-    const willHit = this.rollFiftyPercentHit();
-    this.shotsFired++;
-    if (willHit) this.shotsHit++;
+    const fallback = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+    $('aiSpeech').textContent = fallback;
 
-    // Update live 50% telemetry HUD
-    const pct = Math.round((this.shotsHit / this.shotsFired) * 100);
-    const accEl = document.getElementById('hudBotAccuracy');
-    if (accEl) accEl.textContent = `${pct}% (${this.shotsHit}/${this.shotsFired})`;
-
-    // 2. Calculate exact target coordinates: direct hit on player OR dramatic near-miss offset
-    const missOffset = (Math.random() > 0.5 ? 1 : -1) * (3.2 + Math.random() * 2.2);
-    const aimTargetX = willHit
-      ? context.playerX + (Math.random() * 0.6 - 0.3)
-      : Math.max(-22, Math.min(-2.5, context.playerX + missOffset));
-    const aimTargetY = getTerrainY(aimTargetX);
-
-    const solution = this.solveBallisticsForTarget(
-      effectiveBotX, effectiveBotY, aimTargetX, aimTargetY, context.wind
-    );
-
-    const fallbackTaunt = willHit
-      ? this.tauntsHit[Math.floor(Math.random() * this.tauntsHit.length)]
-      : this.tauntsMiss[Math.floor(Math.random() * this.tauntsMiss.length)];
-
-    addLog(
-      `🤖 AI computed target (${aimTargetX.toFixed(1)}, ${aimTargetY.toFixed(1)}) · Roll: ${willHit ? 'LOCKED HIT (50%)' : 'WARNING SHOT (50%)'}`,
-      'text-indigo-300'
-    );
-
-    // 3. Optional OpenAI Proxy or Direct Host Key for dynamic tactical banter
-    const endpoint = this.proxyUrl || (this.apiKey ? 'https://api.openai.com/v1/chat/completions' : '');
-    if (!endpoint) {
-      return {
-        move: moveStep,
-        angle: solution.angle,
-        power: solution.power,
-        taunt: fallbackTaunt
-      };
-    }
+    if (!SYSTEM_OPENAI_PROXY_URL) return;
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const headers = { 'Content-Type': 'application/json' };
-      if (!this.proxyUrl && this.apiKey) {
-        headers['Authorization'] = `Bearer ${this.apiKey}`;
-      }
-
-      const res = await fetch(endpoint, {
+      const res = await fetch(SYSTEM_OPENAI_PROXY_URL, {
         method: 'POST',
-        headers,
-        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          temperature: 0.75,
-          max_tokens: 90,
-          response_format: { type: 'json_object' },
-          messages: [
-            {
-              role: 'system',
-              content: 'You are Iron Paw, the witty AI tank commander in FLUTON CAT TANKS. Reply ONLY in JSON: {"taunt": "funny short English battle line max 14 words"}. Do not alter coordinates.'
-            },
-            {
-              role: 'user',
-              content: `Player: ${context.playerName} (${context.playerHP} HP), Bot: ${context.botHP} HP, Wind: ${context.wind}. Shot outcome planned: ${willHit ? 'DIRECT HIT on target coordinates' : 'DRAMATIC NEAR-MISS warning shot'}.`
-            }
-          ]
+          prompt: `You are Iron Paw, a witty 3D Chibi Cat Tank AI boss. Distance to player ${state.commander} is ${Math.round(distance)}px, wind is ${state.wind.toFixed(1)}. You are firing a ${isHitRoll ? '50% direct-hit lock' : 'near-miss warning shot'}. Reply with 1 punchy taunt under 16 words in English.`
         })
       });
-      clearTimeout(timeoutId);
-      const data = await res.json();
-      const rawContent = data.choices ? data.choices[0].message.content : JSON.stringify(data);
-      const parsed = typeof rawContent === 'string' ? JSON.parse(rawContent) : rawContent;
-
-      return {
-        move: moveStep,
-        angle: solution.angle,
-        power: solution.power,
-        taunt: parsed.taunt || fallbackTaunt
-      };
-    } catch (err) {
-      console.warn('OpenAI endpoint fallback to local system bot:', err);
-      return {
-        move: moveStep,
-        angle: solution.angle,
-        power: solution.power,
-        taunt: fallbackTaunt
-      };
-    }
-  }
-}
-
-// ============================================================================
-// 4. THREE.JS 3D CHIBI ARTILLERY ENGINE
-// ============================================================================
-const leaderboard = new LeaderboardManager();
-const sound = new SoundEngine();
-const botBrain = new BotBrain();
-
-const state = {
-const CAT_PROFILES = {
-  shadow: { name: 'SHADOW', bodyColor: 0x0f766e, accentColor: 0x69e4e8, furColor: 0x111827, dmgMult: 1.0, laserLen: 4.5 },
-  ember:  { name: 'EMBER',  bodyColor: 0xb45309, accentColor: 0xffd36a, furColor: 0x7c2d12, dmgMult: 1.25, laserLen: 4.0 },
-  pixel:  { name: 'PIXEL',  bodyColor: 0x4338ca, accentColor: 0xa5b4fc, furColor: 0x1e1b4b, dmgMult: 1.05, laserLen: 7.5 }
-};
-
-const state = {
-  started: false,
-  over: false,
-  turn: 'player',
-  turnLock: false,
-  commanderName: localStorage.getItem('fluton_commander_name') || '',
-  selectedCat: 'shadow',
-  stage: 1,
-  score: 0,
-  coins: 120,
-  seconds: 600,
-  playerHP: 100,
-  enemyHP: 100,
-  playerX: -14,
-  enemyX: 14,
-  angle: 45,
-  power: 65,
-  wind: 2.0,
-  damageBonus: 0,
-  shield: 0,
-  shopBought: {},
-  projectile: null,
-  particles: []
-};
-
-// Terrain Heightfield Array (-24 to +24 world X)
-const WORLD_HALF_W = 24;
-const TERRAIN_SEGMENTS = 160;
-const heightMap = new Float32Array(TERRAIN_SEGMENTS + 1);
-
-function getTerrainY(worldX) {
-  const t = (worldX + WORLD_HALF_W) / (WORLD_HALF_W * 2);
-  const idx = Math.max(0, Math.min(TERRAIN_SEGMENTS, Math.round(t * TERRAIN_SEGMENTS)));
-  return heightMap[idx];
-}
-
-// Initialize Three.js Scene
-const container = document.getElementById('stageContainer');
-const canvas = document.getElementById('threeCanvas');
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0b1526);
-scene.fog = new THREE.FogExp2(0x0b1526, 0.014);
-
-const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 200);
-const defaultCamPos = new THREE.Vector3(0, 12.5, 33);
-camera.position.copy(defaultCamPos);
-camera.lookAt(0, 2, 0);
-
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-renderer.setSize(container.clientWidth, container.clientHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-// Three-Point Lighting + Rim Light for Chibi Pop
-const ambientLight = new THREE.AmbientLight(0x8bb8e8, 0.72);
-scene.add(ambientLight);
-
-const dirLight = new THREE.DirectionalLight(0xfff4d6, 1.35);
-dirLight.position.set(16, 28, 18);
-dirLight.castShadow = true;
-dirLight.shadow.mapSize.width = 2048;
-dirLight.shadow.mapSize.height = 2048;
-dirLight.shadow.camera.near = 2;
-dirLight.shadow.camera.far = 80;
-const d = 28;
-dirLight.shadow.camera.left = -d;
-dirLight.shadow.camera.right = d;
-dirLight.shadow.camera.top = d;
-dirLight.shadow.camera.bottom = -d;
-dirLight.shadow.bias = -0.0005;
-scene.add(dirLight);
-
-const rimLight = new THREE.DirectionalLight(0x69e4e8, 0.7);
-rimLight.position.set(-18, 14, -14);
-scene.add(rimLight);
-
-// Fluton Logo Texture generator for Tank Hull Emblem
-function createFlutonLogoTexture() {
-  const c = document.createElement('canvas');
-  c.width = 128; c.height = 128;
-  const g = c.getContext('2d');
-  g.fillStyle = '#ffffff';
-  g.beginPath(); g.arc(64, 64, 62, 0, Math.PI * 2); g.fill();
-  g.fillStyle = '#090d17';
-  g.beginPath(); g.arc(64, 64, 56, 0, Math.PI * 2); g.fill();
-  g.strokeStyle = '#ffffff';
-  g.lineWidth = 11;
-  g.lineCap = 'round';
-  g.lineJoin = 'round';
-  g.beginPath(); g.moveTo(30, 58); g.lineTo(64, 24); g.lineTo(98, 58); g.stroke();
-  g.beginPath(); g.moveTo(66, 54); g.lineTo(46, 74); g.lineTo(66, 94); g.stroke();
-  g.lineWidth = 7;
-  g.beginPath(); g.arc(84, 74, 11, 0, Math.PI * 2); g.stroke();
-  return new THREE.CanvasTexture(c);
-}
-const flutonTexture = createFlutonLogoTexture();
-
-// Stylized Background Islands & Clouds
-const bgGroup = new THREE.Group();
-scene.add(bgGroup);
-for (let i = 0; i < 14; i++) {
-  const cloud = new THREE.Mesh(
-    new THREE.DodecahedronGeometry(1.4 + (i % 3) * 0.7, 1),
-    new THREE.MeshStandardMaterial({ color: 0x1e3a5f, roughness: 0.9, flatShading: true })
-  );
-  cloud.position.set(-28 + i * 4.5, 11 + (i % 4) * 2.2, -16 - (i % 3) * 5);
-  cloud.scale.set(1.8, 0.7, 1);
-  bgGroup.add(cloud);
-}
-
-// 3D Deformable Terrain Mesh
-let terrainMesh = null;
-function buildTerrainGeometry() {
-  for (let i = 0; i <= TERRAIN_SEGMENTS; i++) {
-    const x = -WORLD_HALF_W + (i / TERRAIN_SEGMENTS) * (WORLD_HALF_W * 2);
-    const h = Math.sin(x * 0.18) * 1.35 + Math.cos(x * 0.09) * 1.1 + Math.sin(x * 0.42) * 0.35;
-    heightMap[i] = Math.max(-2.5, Math.min(3.5, h));
-  }
-  updateTerrainMesh();
-}
-
-function updateTerrainMesh() {
-  if (terrainMesh) {
-    scene.remove(terrainMesh);
-    terrainMesh.geometry.dispose();
-  }
-  const shape = new THREE.Shape();
-  shape.moveTo(-WORLD_HALF_W, -9);
-  for (let i = 0; i <= TERRAIN_SEGMENTS; i++) {
-    const x = -WORLD_HALF_W + (i / TERRAIN_SEGMENTS) * (WORLD_HALF_W * 2);
-    shape.lineTo(x, heightMap[i]);
-  }
-  shape.lineTo(WORLD_HALF_W, -9);
-  shape.closePath();
-
-  const extrudeSettings = {
-    depth: 7,
-    bevelEnabled: true,
-    bevelSegments: 3,
-    steps: 1,
-    bevelSize: 0.35,
-    bevelThickness: 0.45
-  };
-  const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-  geo.translate(0, 0, -3.5);
-
-  const grassMat = new THREE.MeshStandardMaterial({
-    color: 0x2dd4bf,
-    roughness: 0.65,
-    metalness: 0.05
-  });
-  const dirtMat = new THREE.MeshStandardMaterial({
-    color: 0x334155,
-    roughness: 0.85
-  });
-
-  terrainMesh = new THREE.Mesh(geo, [dirtMat, grassMat]);
-  terrainMesh.receiveShadow = true;
-  terrainMesh.castShadow = true;
-  scene.add(terrainMesh);
-}
-
-function deformTerrain(impactX, radius) {
-  for (let i = 0; i <= TERRAIN_SEGMENTS; i++) {
-    const x = -WORLD_HALF_W + (i / TERRAIN_SEGMENTS) * (WORLD_HALF_W * 2);
-    const dist = Math.abs(x - impactX);
-    if (dist < radius) {
-      const dent = Math.cos((dist / radius) * (Math.PI / 2)) * (radius * 0.65);
-      heightMap[i] = Math.max(-4.5, heightMap[i] - dent);
-    }
-  }
-  updateTerrainMesh();
-}
-
-// ============================================================================
-// 5. 3D CHIBI CAT TANK BUILDER
-// ============================================================================
-function createChibiCatTank(profile, isEnemy = false) {
-  const root = new THREE.Group();
-
-  // 1. Chibi Rounded Tank Hull
-  const hullGeo = new THREE.BoxGeometry(3.2, 0.95, 2.1);
-  const hullMat = new THREE.MeshStandardMaterial({
-    color: isEnemy ? 0x881337 : profile.bodyColor,
-    roughness: 0.35,
-    metalness: 0.25
-  });
-  const hull = new THREE.Mesh(hullGeo, hullMat);
-  hull.position.y = 0.72;
-  hull.castShadow = true;
-  hull.receiveShadow = true;
-  root.add(hull);
-
-  // Fluton Emblem Badge on Side of Tank
-  const badge = new THREE.Mesh(
-    new THREE.CircleGeometry(0.42, 24),
-    new THREE.MeshBasicMaterial({ map: flutonTexture })
-  );
-  badge.position.set(0, 0.74, 1.07);
-  root.add(badge);
-
-  // 2. Chibi Tracks & Spinning Wheels
-  const trackMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
-  const wheelMat = new THREE.MeshStandardMaterial({ color: isEnemy ? 0xfb7185 : profile.accentColor, metalness: 0.4, roughness: 0.3 });
-  const wheels = [];
-
-  [-1.05, 1.05].forEach(zSide => {
-    const trackPod = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.62, 0.45), trackMat);
-    trackPod.position.set(0, 0.35, zSide);
-    trackPod.castShadow = true;
-    root.add(trackPod);
-
-    for (let wx = -1.2; wx <= 1.2; wx += 0.8) {
-      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.5, 14), wheelMat);
-      wheel.rotation.x = Math.PI / 2;
-      wheel.position.set(wx, 0.35, zSide);
-      root.add(wheel);
-      wheels.push(wheel);
-    }
-  });
-
-  // 3. Turret Dome + Pivoting Cannon Barrel
-  const turret = new THREE.Mesh(
-    new THREE.SphereGeometry(1.05, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.6),
-    new THREE.MeshStandardMaterial({ color: isEnemy ? 0xbe123c : profile.accentColor, roughness: 0.3, metalness: 0.2 })
-  );
-  turret.position.set(0, 1.1, 0);
-  turret.castShadow = true;
-  root.add(turret);
-
-  const barrelPivot = new THREE.Group();
-  barrelPivot.position.set(0.45, 1.38, 0);
-  root.add(barrelPivot);
-
-  const barrel = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.18, 0.24, 2.1, 16),
-    new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6, roughness: 0.25 })
-  );
-  barrel.rotation.z = -Math.PI / 2;
-  barrel.position.x = 1.0;
-  barrel.castShadow = true;
-  barrelPivot.add(barrel);
-
-  const muzzleRing = new THREE.Mesh(
-    new THREE.TorusGeometry(0.21, 0.06, 10, 18),
-    new THREE.MeshStandardMaterial({ color: isEnemy ? 0xfda4af : profile.accentColor, emissive: isEnemy ? 0x881337 : 0x0e7490 })
-  );
-  muzzleRing.rotation.y = Math.PI / 2;
-  muzzleRing.position.x = 2.02;
-  barrelPivot.add(muzzleRing);
-
-  // 4. Giant Cute Chibi Cat Head Commander!
-  const catHeadGroup = new THREE.Group();
-  catHeadGroup.position.set(-0.15, 2.05, 0);
-  root.add(catHeadGroup);
-
-  const furMat = new THREE.MeshStandardMaterial({
-    color: isEnemy ? 0x312e81 : profile.furColor,
-    roughness: 0.55
-  });
-  const headSphere = new THREE.Mesh(new THREE.SphereGeometry(0.82, 22, 18), furMat);
-  headSphere.scale.set(1.02, 0.92, 1.08);
-  headSphere.castShadow = true;
-  catHeadGroup.add(headSphere);
-
-  // Pointy Cat Ears + Pink Inner Ears
-  const earGeo = new THREE.ConeGeometry(0.32, 0.62, 4);
-  const innerEarMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.4 });
-  [-0.45, 0.45].forEach(zEar => {
-    const ear = new THREE.Mesh(earGeo, furMat);
-    ear.position.set(0, 0.78, zEar);
-    ear.rotation.x = zEar > 0 ? 0.22 : -0.22;
-    ear.castShadow = true;
-    catHeadGroup.add(ear);
-
-    const inner = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.38, 4), innerEarMat);
-    inner.position.set(0.06, 0.74, zEar * 0.96);
-    inner.rotation.x = ear.rotation.x;
-    catHeadGroup.add(inner);
-  });
-
-  // Glowing Chibi Eyes
-  const eyeMat = new THREE.MeshBasicMaterial({ color: isEnemy ? 0xff4d6d : 0x69e4e8 });
-  [-0.32, 0.32].forEach(zEye => {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), eyeMat);
-    eye.position.set(0.72, 0.08, zEye);
-    eye.scale.set(0.5, 1.15, 1.0);
-    catHeadGroup.add(eye);
-  });
-
-  // Cute Pink Nose
-  const nose = new THREE.Mesh(
-    new THREE.SphereGeometry(0.09, 10, 10),
-    new THREE.MeshBasicMaterial({ color: 0xfb7185 })
-  );
-  nose.position.set(0.81, -0.08, 0);
-  catHeadGroup.add(nose);
-
-  // Energy Shield Dome (visible when shield > 0)
-  const shieldMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(2.5, 24, 18),
-    new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.18, wireframe: true })
-  );
-  shieldMesh.position.y = 1.2;
-  shieldMesh.visible = false;
-  root.add(shieldMesh);
-
-  if (isEnemy) {
-    root.scale.x = -1; // Face left towards player
-  }
-
-  scene.add(root);
-  return { root, barrelPivot, catHeadGroup, wheels, shieldMesh, recoil: 0 };
-}
-
-let playerTank = null;
-let enemyTank = null;
-
-// Aiming Laser Line
-const aimLineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
-const aimLineMat = new THREE.LineDashedMaterial({ color: 0x69e4e8, dashSize: 0.4, gapSize: 0.25, linewidth: 2 });
-const aimLine = new THREE.Line(aimLineGeo, aimLineMat);
-scene.add(aimLine);
-
-// ============================================================================
-// 6. PROJECTILE & 3D PARTICLE EXPLOSION EFFECTS
-// ============================================================================
-function spawnExplosion3D(pos, colorHex = 0xff9e00, count = 28) {
-  for (let i = 0; i < count; i++) {
-    const size = 0.16 + Math.random() * 0.28;
-    const mesh = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(size, 0),
-      new THREE.MeshBasicMaterial({ color: i % 3 === 0 ? 0xffffff : (i % 2 === 0 ? colorHex : 0xff3b5c) })
-    );
-    mesh.position.copy(pos);
-    scene.add(mesh);
-    const angle = Math.random() * Math.PI * 2;
-    const elev = Math.random() * Math.PI * 0.7;
-    const spd = 0.08 + Math.random() * 0.25;
-    state.particles.push({
-      mesh,
-      vx: Math.cos(angle) * Math.cos(elev) * spd,
-      vy: Math.sin(elev) * spd + 0.08,
-      vz: Math.sin(angle) * Math.cos(elev) * spd,
-      life: 32 + Math.floor(Math.random() * 18)
-    });
-  }
-}
-
-// ============================================================================
-// 7. SPEECH BUBBLES & UI UPDATES
-// ============================================================================
-function showSpeechBubble(isBot, text) {
-  const el = document.getElementById(isBot ? 'botBubble' : 'playerBubble');
-  const tank = isBot ? enemyTank : playerTank;
-  if (!el || !tank) return;
-
-  el.textContent = text;
-  el.classList.remove('hidden');
-
-  const worldPos = new THREE.Vector3(tank.root.position.x, tank.root.position.y + 3.4, 0);
-  worldPos.project(camera);
-  const x = (worldPos.x * 0.5 + 0.5) * container.clientWidth;
-  const y = (-(worldPos.y * 0.5) + 0.5) * container.clientHeight;
-
-  el.style.left = `${Math.max(125, Math.min(container.clientWidth - 125, x))}px`;
-  el.style.top = `${Math.max(55, y)}px`;
-
-  clearTimeout(el._hideTimer);
-  el._hideTimer = setTimeout(() => el.classList.add('hidden'), 4200);
-}
-
-function addLog(msg, colorClass = 'text-slate-300') {
-  const logBox = document.getElementById('combatLog');
-  const div = document.createElement('div');
-  div.className = colorClass;
-  div.textContent = msg;
-  logBox.prepend(div);
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toastMsg');
-  t.textContent = msg;
-  t.classList.remove('hidden');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.add('hidden'), 2600);
-}
-
-function updateHUD() {
-  document.getElementById('coinsDisplay').textContent = state.coins;
-  document.getElementById('hudStage').textContent = String(state.stage).padStart(2, '0');
-  document.getElementById('hudScore').textContent = state.score.toLocaleString();
-  document.getElementById('hudWind').textContent = `${state.wind >= 0 ? '→' : '←'} ${Math.abs(state.wind).toFixed(1)}`;
-
-  document.getElementById('hudPlayerName').textContent = state.commanderName || 'COMMANDER CAT';
-  document.getElementById('hudPlayerSub').textContent = `${CAT_PROFILES[state.selectedCat].name} · STAGE ${state.stage}`;
-  document.getElementById('hudPlayerHPText').textContent = `${Math.max(0, state.playerHP)} HP`;
-  document.getElementById('hudPlayerHPBar').style.width = `${Math.max(0, state.playerHP)}%`;
-
-  document.getElementById('hudBotHPText').textContent = `${Math.max(0, state.enemyHP)} HP`;
-  document.getElementById('hudBotHPBar').style.width = `${Math.max(0, state.enemyHP)}%`;
-
-  document.getElementById('statDmg').textContent = `+${state.damageBonus}%`;
-  document.getElementById('statShield').textContent = state.shield;
-
-  const turnEl = document.getElementById('hudTurn');
-  if (state.turn === 'player') {
-    turnEl.textContent = 'YOUR TURN';
-    turnEl.className = 'text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 mt-0.5';
-  } else {
-    turnEl.textContent = 'BOT AIMING...';
-    turnEl.className = 'text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-rose-500/25 text-rose-300 mt-0.5';
-  }
-
-  const canAct = state.started && !state.over && state.turn === 'player' && !state.projectile && !state.turnLock;
-  document.getElementById('btnFire').disabled = !canAct;
-  document.getElementById('btnMoveLeft').disabled = !canAct;
-  document.getElementById('btnMoveRight').disabled = !canAct;
-
-  if (playerTank) playerTank.shieldMesh.visible = state.shield > 0;
-}
-
-// ============================================================================
-// 8. CORE GAMEPLAY & COMBAT MECHANICS
-// ============================================================================
-function syncTanksToTerrain() {
-  if (playerTank) {
-    const py = getTerrainY(state.playerX);
-    playerTank.root.position.set(state.playerX, py, 0);
-    const slope = (getTerrainY(state.playerX + 0.8) - getTerrainY(state.playerX - 0.8)) / 1.6;
-    playerTank.root.rotation.z = Math.atan(slope) * 0.65;
-    playerTank.barrelPivot.rotation.z = (state.angle * Math.PI) / 180;
-  }
-  if (enemyTank) {
-    const ey = getTerrainY(state.enemyX);
-    enemyTank.root.position.set(state.enemyX, ey, 0);
-    const slope = (getTerrainY(state.enemyX + 0.8) - getTerrainY(state.enemyX - 0.8)) / 1.6;
-    enemyTank.root.rotation.z = Math.atan(slope) * 0.65;
-  }
-  updateAimLaser();
-}
-
-function updateAimLaser() {
-  if (!playerTank || !state.started || state.turn !== 'player' || state.projectile) {
-    aimLine.visible = false;
-    return;
-  }
-  aimLine.visible = true;
-  const rad = (state.angle * Math.PI) / 180;
-  const start = new THREE.Vector3(
-    state.playerX + Math.cos(rad) * 2.2,
-    getTerrainY(state.playerX) + 1.45 + Math.sin(rad) * 1.4,
-    0
-  );
-  const len = CAT_PROFILES[state.selectedCat].laserLen * (0.5 + state.power / 150);
-  const end = new THREE.Vector3(
-    start.x + Math.cos(rad) * len,
-    start.y + Math.sin(rad) * len,
-    0
-  );
-  aimLine.geometry.setFromPoints([start, end]);
-  aimLine.computeLineDistances();
-}
-
-function movePlayer(dx) {
-  if (!state.started || state.over || state.turn !== 'player' || state.projectile) return;
-  state.playerX = Math.max(-21, Math.min(-3.5, state.playerX + dx));
-  if (playerTank) {
-    playerTank.wheels.forEach(w => w.rotation.y -= dx * 1.8);
-  }
-  syncTanksToTerrain();
-}
-
-function fireShell(isBot = false, overrideAngle = null, overridePower = null) {
-  if (state.projectile || state.over) return;
-  if (!isBot && state.turn !== 'player') return;
-
-  sound.playFire();
-  const shooterX = isBot ? state.enemyX : state.playerX;
-  const shooterY = getTerrainY(shooterX);
-  const angleDeg = isBot ? overrideAngle : state.angle;
-  const powerVal = isBot ? overridePower : state.power;
-  const rad = (angleDeg * Math.PI) / 180;
-  const dir = isBot ? -1 : 1;
-
-  if (isBot && enemyTank) {
-    enemyTank.barrelPivot.rotation.z = rad;
-    enemyTank.recoil = 0.35;
-  } else if (playerTank) {
-    playerTank.recoil = 0.35;
-  }
-
-  const speed = powerVal * 0.23;
-  const startPos = new THREE.Vector3(
-    shooterX + dir * Math.cos(rad) * 2.2,
-    shooterY + 1.8,
-    0
-  );
-
-  const shellMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.32, 14, 14),
-    new THREE.MeshBasicMaterial({ color: isBot ? 0xff4d6d : 0xfff099 })
-  );
-  shellMesh.position.copy(startPos);
-  scene.add(shellMesh);
-
-  spawnExplosion3D(startPos, isBot ? 0xff4d6d : 0x69e4e8, 8);
-
-  state.projectile = {
-    mesh: shellMesh,
-    x: startPos.x,
-    y: startPos.y,
-    vx: dir * Math.cos(rad) * speed * 0.11,
-    vy: Math.sin(rad) * speed * 0.11,
-    owner: isBot ? 'bot' : 'player',
-    life: 0
-  };
-
-  addLog(`${isBot ? '🤖 Iron Paw' : '🐱 ' + state.commanderName} fired shell (Angle ${angleDeg}°, Power ${powerVal}%)!`, isBot ? 'text-rose-300' : 'text-cyan-300');
-  updateHUD();
-}
-
-function handleImpact(impactX, impactY, owner) {
-  sound.playExplosion();
-  spawnExplosion3D(new THREE.Vector3(impactX, impactY, 0), 0xffaa00, 32);
-  deformTerrain(impactX, 2.5);
-  syncTanksToTerrain();
-
-  // Camera shake effect
-  camera.position.y += 0.45;
-
-  const targetX = owner === 'player' ? state.enemyX : state.playerX;
-  const dist = Math.abs(impactX - targetX);
-  const blastRadius = 3.6;
-
-  if (dist < blastRadius) {
-    const rawDmg = Math.round((1 - dist / blastRadius) * 44 + 14);
-    const mult = owner === 'player'
-      ? CAT_PROFILES[state.selectedCat].dmgMult * (1 + state.damageBonus / 100)
-      : (1 + (state.stage - 1) * 0.08);
-    const finalDmg = Math.max(8, Math.round(rawDmg * mult));
-
-    if (owner === 'player') {
-      state.enemyHP = Math.max(0, state.enemyHP - finalDmg);
-      state.score += finalDmg * 12;
-      addLog(`💥 DIRECT HIT! Iron Paw took ${finalDmg} DMG (+${finalDmg * 12} PTS)`, 'text-emerald-400 font-bold');
-      showSpeechBubble(true, 'Meowch!! Critical hit!! 😿');
-    } else {
-      const blocked = Math.min(state.shield, finalDmg);
-      state.shield -= blocked;
-      const netDmg = finalDmg - blocked;
-      state.playerHP = Math.max(0, state.playerHP - netDmg);
-      addLog(`🔥 HULL HIT! Took ${netDmg} DMG ${blocked > 0 ? `(Shield absorbed ${blocked})` : ''}`, 'text-rose-400 font-bold');
-      showSpeechBubble(false, blocked > 0 ? '9-Life Shield saved me! 🛡️' : 'Meowww! Scratched my paint!');
-    }
-  } else {
-    addLog('💨 Shell impacted terrain and carved a crater!', 'text-slate-400');
-  }
-
-  if (state.projectile) {
-    scene.remove(state.projectile.mesh);
-    state.projectile = null;
-  }
-  updateHUD();
-
-  // Check Win/Loss
-  if (state.enemyHP <= 0 || state.playerHP <= 0) {
-    endRound(state.enemyHP <= 0);
-    return;
-  }
-
-  // Switch Turn & Randomize Wind
-  state.turn = owner === 'player' ? 'bot' : 'player';
-  state.wind = Number((Math.random() * 6 - 3).toFixed(1));
-  updateHUD();
-
-  if (state.turn === 'bot') {
-    state.turnLock = true;
-    setTimeout(async () => {
-      if (state.over) return;
-      const decision = await botBrain.decideTurn({
-        stage: state.stage,
-        botX: state.enemyX,
-        botY: getTerrainY(state.enemyX),
-        playerX: state.playerX,
-        playerY: getTerrainY(state.playerX),
-        botHP: state.enemyHP,
-        playerHP: state.playerHP,
-        wind: state.wind,
-        playerName: state.commanderName
-      });
-
-      if (decision.move !== 0) {
-        state.enemyX = Math.max(3.5, Math.min(21, state.enemyX + decision.move));
-        if (enemyTank) enemyTank.wheels.forEach(w => w.rotation.y -= decision.move * 1.8);
-        syncTanksToTerrain();
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data?.choices?.[0]?.message?.content?.trim();
+        if (reply) $('aiSpeech').textContent = reply;
       }
-      showSpeechBubble(true, decision.taunt);
-      setTimeout(() => {
-        state.turnLock = false;
-        fireShell(true, decision.angle, decision.power);
-      }, 950);
-    }, 650);
-  }
-}
-
-function endRound(isWin) {
-  state.over = true;
-  state.started = false;
-  clearInterval(roundTimerHandle);
-
-  const reward = isWin ? (60 + state.stage * 20) : 15;
-  if (isWin) {
-    sound.playMeow(580);
-    state.score += 250 * state.stage;
-  }
-  state.coins += reward;
-
-  document.getElementById('endEmoji').textContent = isWin ? '🏆' : '😿';
-  document.getElementById('endTitle').textContent = isWin ? `STAGE ${state.stage} VICTORY!` : 'TANK DESTROYED!';
-  document.getElementById('endDesc').textContent = isWin
-    ? 'Outstanding! Your combat score has been published to the Global Leaderboard.'
-    : 'Iron Paw won this skirmish. Upgrade your armor and strike back!';
-  document.getElementById('endReward').textContent = `+${reward} $FLUTON`;
-  document.getElementById('endTotalScore').textContent = `${state.score.toLocaleString()} PTS`;
-  document.getElementById('btnNextStage').textContent = isWin ? 'ARMORY & NEXT STAGE ▶' : 'RETRY THIS STAGE ↻';
-
-  document.getElementById('endModal').classList.remove('hidden');
-  document.getElementById('endModal').classList.add('flex');
-  updateHUD();
-
-  // Save to Online Leaderboard & Broadcast to Live Arena Feed
-  leaderboard.submitScore({
-    name: state.commanderName,
-    cat: state.selectedCat,
-    stage: state.stage,
-    score: state.score,
-    coins: state.coins
-  });
-  leaderboard.broadcastEvent(
-    isWin
-      ? `🏆 Commander [${state.commanderName}] defeated System AI at Stage ${state.stage} (${state.score.toLocaleString()} PTS)!`
-      : `💥 System AI Iron Paw defeated [${state.commanderName}] at Stage ${state.stage}!`
-  );
-}
-
-let roundTimerHandle = null;
-function startTimer() {
-  clearInterval(roundTimerHandle);
-  roundTimerHandle = setInterval(() => {
-    if (!state.started || state.over) return;
-    state.seconds--;
-    const m = Math.floor(state.seconds / 60);
-    const s = state.seconds % 60;
-    document.getElementById('hudTimer').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    if (state.seconds <= 0) {
-      endRound(state.playerHP >= state.enemyHP);
+    } catch (_) {
+      // Silently keep built-in AI line if proxy is offline
     }
-  }, 1000);
-}
+  }
 
-function initBattle() {
-  const inputName = document.getElementById('inputCommanderName').value.trim();
-  state.commanderName = inputName || 'Commander Cat';
-  localStorage.setItem('fluton_commander_name', state.commanderName);
+  function executeBotTurn() {
+    if (state.over || !state.started) return;
 
-  state.started = true;
-  state.over = false;
-  state.turn = 'player';
-  state.turnLock = false;
-  state.playerHP = 100;
-  state.enemyHP = 100 + (state.stage - 1) * 15;
-  state.playerX = -14;
-  state.enemyX = 14;
-  state.seconds = 600;
-  state.wind = Number((Math.random() * 4 - 2).toFixed(1));
-  state.projectile = null;
+    // Bot adjusts position slightly for tactical realism
+    const moveStep = (Math.random() - 0.5) * 40;
+    state.enemyX = Math.max(520, Math.min(845, state.enemyX + moveStep));
+    state.wheelSpinE += moveStep * 0.08;
 
-  buildTerrainGeometry();
-  if (playerTank) scene.remove(playerTank.root);
-  if (enemyTank) scene.remove(enemyTank.root);
+    const chosenAngle = 42 + Math.floor(Math.random() * 18); // 42° - 59°
+    state.enemyAngle = 180 - chosenAngle;
 
-  playerTank = createChibiCatTank(CAT_PROFILES[state.selectedCat], false);
-  enemyTank = createChibiCatTank(CAT_PROFILES.ember, true);
-  syncTanksToTerrain();
+    const exactPower = solveBallisticPower(
+      state.enemyX,
+      surfaceY(state.enemyX),
+      state.playerX,
+      surfaceY(state.playerX),
+      chosenAngle,
+      state.wind
+    );
 
-  document.getElementById('startModal').classList.add('hidden');
-  document.getElementById('shopModal').classList.add('hidden');
-  document.getElementById('endModal').classList.add('hidden');
+    // Calibrated 50% Hit Probability Roll
+    const rollDirectHit = Math.random() < 0.50;
+    const finalPower = rollDirectHit
+      ? exactPower
+      : exactPower + (Math.random() < 0.5 ? -8.5 : 8.5);
 
-  sound.startBGM();
-  sound.playMeow(490);
-  showSpeechBubble(false, `Meow! ${state.commanderName} reporting for duty!`);
-  addLog(`🚀 Stage ${state.stage} started · Pilot: ${CAT_PROFILES[state.selectedCat].name}`, 'text-amber-300 font-bold');
+    triggerBotDialogue(rollDirectHit, Math.abs(state.enemyX - state.playerX));
 
-  updateHUD();
-  startTimer();
-}
+    setTimeout(() => {
+      if (state.over || !state.started) return;
+      launchShell(true, chosenAngle, Math.max(25, Math.min(105, finalPower)));
+      state.turnLock = false;
+    }, 950);
+  }
 
-function openArmoryShop() {
-  const items = [
-    { id: 'dmg', name: 'FELINE PLASMA SHELLS', desc: '+15% Permanent Cannon Damage', cost: 65, apply: () => state.damageBonus += 15 },
-    { id: 'shield', name: 'NINE-LIFE ENERGY SHIELD', desc: 'Absorbs 30 DMG next battle', cost: 55, apply: () => state.shield += 30 },
-    { id: 'repair', name: 'CATNIP NANO-REPAIR', desc: 'Instantly restores +40 HP', cost: 40, apply: () => state.playerHP = Math.min(100, state.playerHP + 40) },
-    { id: 'bonus', name: 'FLUTON GOLD TROPHY', desc: '+300 Instant Leaderboard PTS', cost: 50, apply: () => state.score += 300 }
-  ];
+  // =========================================================================
+  // 5. CORE GAMEPLAY LOOP & PHYSICS
+  // =========================================================================
+  function logMsg(text) {
+    const row = document.createElement('div');
+    row.textContent = text;
+    $('log').prepend(row);
+  }
 
-  document.getElementById('shopCoins').textContent = `${state.coins} $FLUTON`;
-  const grid = document.getElementById('shopGrid');
-  grid.innerHTML = '';
+  function updateHUD() {
+    $('playerHealth').style.width = Math.max(0, state.playerHP) + '%';
+    $('enemyHealth').style.width = Math.max(0, state.enemyHP) + '%';
+    $('coins').textContent = state.coins;
+    $('stageNo').textContent = String(state.stage).padStart(2, '0');
+    $('wind').textContent = (state.wind >= 0 ? '→ ' : '← ') + Math.abs(state.wind).toFixed(1);
+    $('damageBonus').textContent = state.damage + '%';
+    $('shieldStat').textContent = state.shield;
+    $('playerName').textContent = `${state.commander.toUpperCase()} (${CATS[state.selected].name})`;
+    $('playerWeapon').textContent = state.damage > 0 ? `OVERCHARGED (+${state.damage}%)` : 'STANDARD CANNON';
+    $('turnLabel').textContent = state.turn === 'player' ? 'YOUR TURN' : 'AI BOT TARGETING...';
 
-  items.forEach(item => {
-    const bought = !!state.shopBought[item.id];
-    const canBuy = state.coins >= item.cost && !bought;
-    const card = document.createElement('div');
-    card.className = 'bg-slate-800/90 border border-slate-700 rounded-2xl p-3 flex flex-col justify-between';
-    card.innerHTML = `
-      <div>
-        <div class="font-bold text-xs text-white">${item.name}</div>
-        <div class="text-[11px] text-slate-400 mt-1 mb-2.5">${item.desc}</div>
-      </div>
-      <button ${canBuy ? '' : 'disabled'} class="btn-arcade w-full py-2 rounded-xl text-xs font-extrabold ${bought ? 'bg-emerald-900/50 text-emerald-300' : 'bg-amber-500 text-slate-950'}">
-        ${bought ? '✓ PURCHASED' : `BUY · ${item.cost} ◆`}
-      </button>
-    `;
-    card.querySelector('button').onclick = () => {
-      if (!canBuy) return;
-      state.coins -= item.cost;
-      state.shopBought[item.id] = true;
-      item.apply();
-      sound.playCoin();
-      addLog(`🛠️ Upgraded: ${item.name}`, 'text-amber-300');
-      updateHUD();
-      openArmoryShop();
+    const locked = !state.started || state.turn !== 'player' || !!state.projectile || state.turnLock || state.over;
+    $('fireBtn').disabled = locked;
+    $('leftBtn').disabled = locked;
+    $('rightBtn').disabled = locked;
+  }
+
+  function launchShell(isCPU, angleDeg, powerVal) {
+    if (state.projectile || state.over) return;
+    SFX.fire();
+    state.trail = [];
+
+    const dir = isCPU ? -1 : 1;
+    const a = angleDeg * Math.PI / 180;
+    const startX = isCPU ? state.enemyX : state.playerX;
+    const startY = surfaceY(startX);
+    const spd = powerVal * 0.23;
+
+    state.projectile = {
+      x: startX + dir * Math.cos(a) * 44,
+      y: startY - 30 - Math.sin(a) * 44,
+      vx: dir * Math.cos(a) * spd,
+      vy: -Math.sin(a) * spd,
+      owner: isCPU ? 'enemy' : 'player',
+      life: 0
     };
-    grid.appendChild(card);
-  });
 
-  document.getElementById('shopModal').classList.remove('hidden');
-  document.getElementById('shopModal').classList.add('flex');
-}
-
-// ============================================================================
-// 9. CAMERA ORBIT CONTROLS & MAIN RENDER LOOP
-// ============================================================================
-let isDragging = false, prevMouse = { x: 0, y: 0 }, camTheta = 0, camPhi = 0.34, camRadius = 35;
-
-function updateCameraPosition() {
-  camera.position.x = camRadius * Math.sin(camTheta) * Math.cos(camPhi);
-  camera.position.y = Math.max(4, camRadius * Math.sin(camPhi) + 2);
-  camera.position.z = camRadius * Math.cos(camTheta) * Math.cos(camPhi);
-  camera.lookAt(0, 1.5, 0);
-}
-
-canvas.addEventListener('pointerdown', e => {
-  isDragging = true;
-  prevMouse = { x: e.clientX, y: e.clientY };
-});
-window.addEventListener('pointerup', () => isDragging = false);
-window.addEventListener('pointermove', e => {
-  if (!isDragging) return;
-  const dx = e.clientX - prevMouse.x;
-  const dy = e.clientY - prevMouse.y;
-  prevMouse = { x: e.clientX, y: e.clientY };
-  camTheta = Math.max(-0.85, Math.min(0.85, camTheta - dx * 0.005));
-  camPhi = Math.max(0.12, Math.min(0.85, camPhi + dy * 0.005));
-  updateCameraPosition();
-});
-canvas.addEventListener('wheel', e => {
-  e.preventDefault();
-  camRadius = Math.max(20, Math.min(48, camRadius + e.deltaY * 0.02));
-  updateCameraPosition();
-}, { passive: false });
-
-document.getElementById('btnResetCam').onclick = () => {
-  camTheta = 0; camPhi = 0.34; camRadius = 35;
-  updateCameraPosition();
-};
-
-// Animation Loop
-let clock = new THREE.Clock();
-function animate() {
-  requestAnimationFrame(animate);
-  const t = clock.getElapsedTime();
-
-  // Gentle idle bobbing for Chibi Cat Heads & Clouds
-  if (playerTank) {
-    playerTank.catHeadGroup.rotation.z = Math.sin(t * 2.5) * 0.05;
-    if (playerTank.recoil > 0) {
-      playerTank.barrelPivot.position.x = 0.45 - playerTank.recoil;
-      playerTank.recoil = Math.max(0, playerTank.recoil - 0.025);
-    }
+    logMsg(`${isCPU ? 'Iron Paw AI' : state.commander} fired at ${angleDeg}° / ${Math.round(powerVal)}% power.`);
+    updateHUD();
+    stepProjectile();
   }
-  if (enemyTank) {
-    enemyTank.catHeadGroup.rotation.z = Math.cos(t * 2.3) * 0.05;
-    if (enemyTank.recoil > 0) {
-      enemyTank.barrelPivot.position.x = 0.45 - enemyTank.recoil;
-      enemyTank.recoil = Math.max(0, enemyTank.recoil - 0.025);
-    }
-  }
-  bgGroup.children.forEach((c, idx) => {
-    c.position.x += Math.sin(t * 0.2 + idx) * 0.002;
-  });
 
-  // Update Flying Projectile Physics
-  if (state.projectile) {
+  function stepProjectile() {
     const p = state.projectile;
-    p.vy -= 0.016; // Gravity
-    p.vx += state.wind * 0.00022; // Wind influence
+    if (!p) return;
+
+    p.vy += GRAVITY;
+    p.vx += state.wind * 0.0025;
     p.x += p.vx;
     p.y += p.vy;
     p.life++;
-    p.mesh.position.set(p.x, p.y, 0);
 
-    // Smoke trail particle
-    if (p.life % 2 === 0) {
-      spawnExplosion3D(new THREE.Vector3(p.x, p.y, 0), 0x94a3b8, 1);
-    }
+    state.trail.push({ x: p.x, y: p.y });
+    if (state.trail.length > 22) state.trail.shift();
 
-    const groundH = getTerrainY(p.x);
     const targetX = p.owner === 'player' ? state.enemyX : state.playerX;
-    const targetY = getTerrainY(targetX) + 1.3;
-    const hitTank = Math.hypot(p.x - targetX, p.y - targetY) < 1.85;
-    const hitGround = p.y <= groundH || Math.abs(p.x) > WORLD_HALF_W + 1 || p.y < -8 || p.life > 320;
+    const targetY = surfaceY(targetX) - 24;
+    const hitTank = Math.hypot(p.x - targetX, p.y - targetY) < 38;
+    const hitGround = p.x < 0 || p.x > W || p.y >= surfaceY(p.x) || p.y > H;
 
-    if (hitTank || hitGround) {
-      handleImpact(Math.max(-WORLD_HALF_W, Math.min(WORLD_HALF_W, p.x)), Math.max(groundH, p.y), p.owner);
+    if (hitTank || hitGround || p.life > 240) {
+      const ix = Math.max(0, Math.min(W, p.x));
+      const iy = Math.max(0, Math.min(H, p.y));
+      handleImpact(ix, iy, p.owner);
+      return;
+    }
+
+    requestAnimationFrame(stepProjectile);
+  }
+
+  function handleImpact(x, y, owner) {
+    SFX.boom();
+    state.shake = 12;
+    const radius = 50 + state.stage * 2;
+    state.explosions.push({ x, y, r: radius, life: 26 });
+    createCrater(x, radius * 0.8);
+
+    // Spawn 3D Debris Particles
+    for (let i = 0; i < 18; i++) {
+      state.particles.push({
+        x, y,
+        vx: (Math.random() - 0.5) * 9,
+        vy: -Math.random() * 8 - 2,
+        color: i % 2 === 0 ? '#ffd36a' : '#ff6b8b',
+        life: 24 + Math.random() * 14
+      });
+    }
+
+    const targetX = owner === 'player' ? state.enemyX : state.playerX;
+    const dist = Math.abs(x - targetX);
+
+    if (dist < radius + 24) {
+      const mult = owner === 'player' ? CATS[state.selected].damage * (1 + state.damage / 100) : 1;
+      const dmg = Math.max(8, Math.round((radius + 24 - dist) * 0.65 * mult));
+
+      if (owner === 'player') {
+        state.enemyHP = Math.max(0, state.enemyHP - dmg);
+        logMsg(`💥 Direct hit! Iron Paw AI took ${dmg} DMG.`);
+      } else {
+        const blocked = Math.min(state.shield, dmg);
+        state.shield -= blocked;
+        const netDmg = dmg - blocked;
+        state.playerHP = Math.max(0, state.playerHP - netDmg);
+        logMsg(`🔥 Impact! You took ${netDmg} DMG${blocked > 0 ? ` (${blocked} blocked)` : ''}.`);
+      }
+    } else {
+      logMsg('💨 Shell landed off target. Adjust angle or power!');
+    }
+
+    state.projectile = null;
+    updateHUD();
+
+    if (state.enemyHP <= 0 || state.playerHP <= 0) {
+      endMatch(state.enemyHP <= 0);
+      return;
+    }
+
+    state.turn = owner === 'player' ? 'enemy' : 'player';
+    state.wind = +(Math.random() * 6 - 3).toFixed(1);
+    updateHUD();
+
+    if (state.turn === 'enemy') {
+      state.turnLock = true;
+      updateHUD();
+      executeBotTurn();
     }
   }
 
-  // Update Explosion Particles
-  for (let i = state.particles.length - 1; i >= 0; i--) {
-    const pt = state.particles[i];
-    pt.vy -= 0.008;
-    pt.mesh.position.x += pt.vx;
-    pt.mesh.position.y += pt.vy;
-    pt.mesh.position.z += pt.vz;
-    pt.mesh.rotation.x += 0.1;
-    pt.mesh.rotation.y += 0.1;
-    pt.life--;
-    pt.mesh.scale.setScalar(Math.max(0.01, pt.life / 35));
-    if (pt.life <= 0) {
-      scene.remove(pt.mesh);
-      pt.mesh.geometry.dispose();
-      state.particles.splice(i, 1);
+  // =========================================================================
+  // 6. ONLINE LEADERBOARD & STAGE PROGRESSION
+  // =========================================================================
+  function getLeaderboard() {
+    const defaultBoard = [
+      { name: 'Meww', pilot: 'SHADOW', stage: 5, coins: 480 },
+      { name: 'FlutonAce', pilot: 'EMBER', stage: 4, coins: 365 },
+      { name: 'CyberWhiskers', pilot: 'PIXEL', stage: 3, coins: 290 },
+      { name: 'NekoTanker', pilot: 'SHADOW', stage: 2, coins: 210 }
+    ];
+    try {
+      const saved = JSON.parse(localStorage.getItem('fluton_cat_lb_v2'));
+      return Array.isArray(saved) && saved.length ? saved : defaultBoard;
+    } catch (_) {
+      return defaultBoard;
     }
   }
 
-  renderer.render(scene, camera);
-}
+  function saveScoreToLeaderboard() {
+    const board = getLeaderboard();
+    const existing = board.find(r => r.name.toLowerCase() === state.commander.toLowerCase());
+    if (existing) {
+      existing.stage = Math.max(existing.stage, state.stage);
+      existing.coins = Math.max(existing.coins, state.coins);
+      existing.pilot = CATS[state.selected].name;
+    } else {
+      board.push({
+        name: state.commander,
+        pilot: CATS[state.selected].name,
+        stage: state.stage,
+        coins: state.coins
+      });
+    }
+    board.sort((a, b) => (b.stage - a.stage) || (b.coins - a.coins));
+    const top10 = board.slice(0, 10);
+    localStorage.setItem('fluton_cat_lb_v2', JSON.stringify(top10));
+    $('tickerText').textContent = `LIVE ARENA: Commander ${state.commander} reached Stage ${state.stage} with ${state.coins} $FLUTON!`;
+  }
 
-// ============================================================================
-// 10. UI EVENT LISTENERS & RESPONSIVE RESIZE
-// ============================================================================
-window.addEventListener('resize', () => {
-  if (!container) return;
-  camera.aspect = container.clientWidth / container.clientHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(container.clientWidth, container.clientHeight);
-});
-// Pre-fill saved commander name & API Key / Proxy
-document.getElementById('inputCommanderName').value = state.commanderName;
-document.getElementById('inputProxyUrl').value = botBrain.proxyUrl;
-document.getElementById('inputOpenAIKey').value = botBrain.apiKey;
-botBrain.updateBadge();
+  function renderLeaderboard() {
+    const board = getLeaderboard();
+    $('lbBody').innerHTML = board.map((row, idx) => `
+      <tr class="${idx === 0 ? 'lb-rank-1' : ''}">
+        <td>${idx === 0 ? '👑 1' : idx + 1}</td>
+        <td>${row.name}</td>
+        <td>${row.pilot}</td>
+        <td>Stage ${String(row.stage).padStart(2, '0')}</td>
+        <td>◆ ${row.coins}</td>
+      </tr>
+    `).join('');
+  }
 
-// Cat Selection Cards
-document.querySelectorAll('.cat-card').forEach(card => {
-  card.addEventListener('click', () => {
-    document.querySelectorAll('.cat-card').forEach(c => {
-      c.classList.remove('border-cyan-400', 'bg-slate-800/90');
-      c.classList.add('border-slate-700', 'bg-slate-800/60');
+  function endMatch(playerWon) {
+    state.over = true;
+    state.started = false;
+    const reward = playerWon ? 55 + state.stage * 15 : 20;
+    state.coins += reward;
+    if (playerWon) SFX.coin();
+
+    saveScoreToLeaderboard();
+
+    $('endTitle').textContent = playerWon ? '🏆 VICTORY, COMMANDER!' : '💥 TANK DISABLED';
+    $('endText').textContent = playerWon
+      ? `Stage ${state.stage} cleared! Iron Paw AI has been defeated.`
+      : 'Iron Paw AI landed the decisive blow. Upgrade your armor and strike back!';
+    $('rewardText').textContent = `+${reward} $FLUTON`;
+    $('endOverlay').style.display = 'flex';
+    updateHUD();
+  }
+
+  let clockTimer = null;
+  function startClock() {
+    clearInterval(clockTimer);
+    clockTimer = setInterval(() => {
+      if (!state.started || state.over) return;
+      state.seconds--;
+      const m = Math.floor(state.seconds / 60);
+      const s = state.seconds % 60;
+      $('timer').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (state.seconds <= 0) endMatch(state.playerHP >= state.enemyHP);
+    }, 1000);
+  }
+
+  function startBattle() {
+    initAudio();
+    SFX.meow();
+
+    const rawName = $('commanderInput').value.trim();
+    if (rawName) state.commander = rawName;
+
+    state.started = true;
+    state.over = false;
+    state.turn = 'player';
+    state.turnLock = false;
+    state.playerHP = 100;
+    state.enemyHP = 100;
+    state.playerX = 165;
+    state.enemyX = 735;
+    state.seconds = 600;
+    state.wind = +(Math.random() * 4 - 2).toFixed(1);
+    state.projectile = null;
+    state.trail = [];
+    state.explosions = [];
+
+    if (CATS[state.selected].aim > 0 && state.stage === 1) {
+      state.angle = Math.min(85, state.angle + CATS[state.selected].aim);
+      $('angle').value = state.angle;
+      $('angleVal').textContent = state.angle + '°';
+    }
+
+    generateTerrain();
+    $('startOverlay').style.display = 'none';
+    $('shopOverlay').style.display = 'none';
+    $('endOverlay').style.display = 'none';
+
+    logMsg(`Stage ${state.stage} started! Commander ${state.commander} vs Iron Paw AI.`);
+    updateHUD();
+    startClock();
+    startBgm();
+  }
+
+  function openShop() {
+    const items = [
+      { id: 'dmg', name: 'PLASMA SHELLS', desc: '+15% permanent cannon damage', cost: 65, fn: () => state.damage += 15 },
+      { id: 'shd', name: 'NINE-LIFE DOME', desc: '+30 energy shield armor', cost: 55, fn: () => state.shield += 30 },
+      { id: 'aim', name: 'OPTIC CALIBRATOR', desc: '+5° precision elevation boost', cost: 45, fn: () => { state.angle = Math.min(85, state.angle + 5); $('angle').value = state.angle; $('angleVal').textContent = state.angle + '°'; } },
+      { id: 'rep', name: 'TURBO TUNA KIT', desc: 'Start next stage with +25% bonus DMG', cost: 80, fn: () => state.damage += 25 }
+    ];
+
+    $('shopBalance').textContent = `${state.coins} $FLUTON`;
+    $('shopItems').innerHTML = '';
+
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'item';
+      const bought = !!state.shopBought[item.id];
+      const disabled = bought || state.coins < item.cost;
+      card.innerHTML = `
+        <b>${item.name}</b>
+        <small>${item.desc}</small>
+        <button ${disabled ? 'disabled' : ''}>${bought ? 'EQUIPPED' : `BUY · ${item.cost} ◆`}</button>
+      `;
+      card.querySelector('button').onclick = () => {
+        if (state.coins < item.cost || state.shopBought[item.id]) return;
+        state.coins -= item.cost;
+        state.shopBought[item.id] = true;
+        item.fn();
+        SFX.coin();
+        logMsg(`Equipped ${item.name}!`);
+        openShop();
+        updateHUD();
+      };
+      $('shopItems').appendChild(card);
     });
-    card.classList.remove('border-slate-700', 'bg-slate-800/60');
-    card.classList.add('border-cyan-400', 'bg-slate-800/90');
-    state.selectedCat = card.dataset.cat;
-    sound.playMeow(state.selectedCat === 'ember' ? 390 : state.selectedCat === 'pixel' ? 560 : 470);
+
+    $('shopOverlay').style.display = 'flex';
+  }
+
+  // =========================================================================
+  // 7. EVENT BINDINGS
+  // =========================================================================
+  document.querySelectorAll('.cat').forEach(card => {
+    card.onclick = () => {
+      document.querySelectorAll('.cat').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.selected = card.dataset.cat;
+      SFX.meow();
+    };
   });
-});
 
-// Sliders & Controls
-const sliderAngle = document.getElementById('sliderAngle');
-const sliderPower = document.getElementById('sliderPower');
+  $('startBtn').onclick = startBattle;
+  $('fireBtn').onclick = () => launchShell(false, state.angle, state.power);
 
-sliderAngle.addEventListener('input', e => {
-  state.angle = Number(e.target.value);
-  document.getElementById('valAngle').textContent = `${state.angle}°`;
-  syncTanksToTerrain();
-});
+  function movePlayer(dx) {
+    if (!state.started || state.turn !== 'player' || state.projectile || state.over) return;
+    state.playerX = Math.max(55, Math.min(410, state.playerX + dx));
+    state.wheelSpinP += dx * 0.08;
+    SFX.move();
+  }
 
-sliderPower.addEventListener('input', e => {
-  state.power = Number(e.target.value);
-  document.getElementById('valPower').textContent = `${state.power}%`;
-  updateAimLaser();
-});
+  $('leftBtn').onclick = () => movePlayer(-18);
+  $('rightBtn').onclick = () => movePlayer(18);
 
-document.getElementById('btnStartBattle').onclick = initBattle;
-document.getElementById('btnFire').onclick = () => fireShell(false);
-document.getElementById('btnMoveLeft').onclick = () => movePlayer(-1.2);
-document.getElementById('btnMoveRight').onclick = () => movePlayer(1.2);
-document.getElementById('btnMusic').onclick = () => sound.toggleMute();
+  $('angle').oninput = e => {
+    state.angle = +e.target.value;
+    $('angleVal').textContent = state.angle + '°';
+  };
+  $('power').oninput = e => {
+    state.power = +e.target.value;
+    $('powerVal').textContent = state.power + '%';
+  };
 
-document.getElementById('btnNextStage').onclick = () => {
-  if (state.enemyHP <= 0) {
+  $('nextStage').onclick = () => {
     state.stage++;
     state.shopBought = {};
-    document.getElementById('endModal').classList.add('hidden');
-    openArmoryShop();
-  } else {
-    initBattle();
-  }
-};
-document.getElementById('btnContinueNextStage').onclick = initBattle;
+    $('endOverlay').style.display = 'none';
+    openShop();
+  };
+  $('skipShop').onclick = startBattle;
 
-// OpenAI Modal Controls
-const aiModal = document.getElementById('aiModal');
-const openAiSetup = () => { aiModal.classList.remove('hidden'); aiModal.classList.add('flex'); };
-document.getElementById('btnOpenAI').onclick = openAiSetup;
-document.getElementById('btnOpenAIFromStart').onclick = openAiSetup;
-document.getElementById('closeAiModal').onclick = () => aiModal.classList.add('hidden');
-document.getElementById('btnSaveAIKey').onclick = () => {
-  botBrain.setConfig(
-    document.getElementById('inputProxyUrl').value,
-    document.getElementById('inputOpenAIKey').value
-  );
-  aiModal.classList.add('hidden');
-  showToast(
-    (botBrain.proxyUrl || botBrain.apiKey)
-      ? '🧠 Connected OpenAI + 50% Hit-Rate Ballistics!'
-      : '✅ Running default shared 50% System Bot for all players'
-  );
-};
-document.getElementById('btnClearAIKey').onclick = () => {
-  document.getElementById('inputProxyUrl').value = '';
-  document.getElementById('inputOpenAIKey').value = '';
-  botBrain.setConfig('', '');
-  showToast('🔄 Restored default System Bot configuration');
-};
+  $('soundToggle').onclick = () => {
+    state.soundOn = !state.soundOn;
+    $('soundToggle').textContent = state.soundOn ? '🔊 SOUND: ON' : '🔇 SOUND: OFF';
+    if (state.soundOn) SFX.meow();
+  };
 
-// Leaderboard Modal Controls
-const lbModal = document.getElementById('leaderboardModal');
-const openLb = () => { leaderboard.render(); lbModal.classList.remove('hidden'); lbModal.classList.add('flex'); };
-document.getElementById('btnLeaderboard').onclick = openLb;
-document.getElementById('btnViewRankAfterEnd').onclick = openLb;
-document.getElementById('closeLeaderboardModal').onclick = () => lbModal.classList.add('hidden');
-document.getElementById('btnCloseRank').onclick = () => lbModal.classList.add('hidden');
+  $('openLbBtn').onclick = () => {
+    renderLeaderboard();
+    $('lbOverlay').style.display = 'flex';
+  };
+  $('viewLbAfterEnd').onclick = () => {
+    renderLeaderboard();
+    $('lbOverlay').style.display = 'flex';
+  };
+  $('closeLbBtn').onclick = () => $('lbOverlay').style.display = 'none';
 
-// Keyboard Controls (A/D, Arrow Keys, Space)
-document.addEventListener('keydown', e => {
-  if (document.activeElement.tagName === 'INPUT') return;
-  if (e.key.toLowerCase() === 'a') movePlayer(-1.0);
-  if (e.key.toLowerCase() === 'd') movePlayer(1.0);
-  if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    state.angle = Math.min(85, state.angle + 2);
-    sliderAngle.value = state.angle;
-    document.getElementById('valAngle').textContent = `${state.angle}°`;
-    syncTanksToTerrain();
-  }
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    state.angle = Math.max(10, state.angle - 2);
-    sliderAngle.value = state.angle;
-    document.getElementById('valAngle').textContent = `${state.angle}°`;
-    syncTanksToTerrain();
-  }
-  if (e.code === 'Space') {
-    e.preventDefault();
-    fireShell(false);
-  }
-});
+  $('openAiBtn').onclick = () => {
+    $('proxyInput').value = SYSTEM_OPENAI_PROXY_URL;
+    $('aiOverlay').style.display = 'flex';
+  };
+  $('saveAiBtn').onclick = () => {
+    SYSTEM_OPENAI_PROXY_URL = $('proxyInput').value.trim();
+    localStorage.setItem('fluton_proxy_url', SYSTEM_OPENAI_PROXY_URL);
+    $('aiOverlay').style.display = 'none';
+    logMsg(SYSTEM_OPENAI_PROXY_URL ? 'Connected to Shared OpenAI Proxy!' : 'Using Built-in 50% Ballistic AI.');
+  };
 
-// Boot 3D Preview Scene immediately on load
-buildTerrainGeometry();
-playerTank = createChibiCatTank(CAT_PROFILES.shadow, false);
-enemyTank = createChibiCatTank(CAT_PROFILES.ember, true);
-syncTanksToTerrain();
-updateHUD();
-animate();
+  document.addEventListener('keydown', e => {
+    if (document.activeElement.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase();
+    if (k === 'a') movePlayer(-14);
+    if (k === 'd') movePlayer(14);
+    if (e.key === 'ArrowUp') {
+      state.angle = Math.min(85, state.angle + 2);
+      $('angle').value = state.angle;
+      $('angleVal').textContent = state.angle + '°';
+    }
+    if (e.key === 'ArrowDown') {
+      state.angle = Math.max(10, state.angle - 2);
+      $('angle').value = state.angle;
+      $('angleVal').textContent = state.angle + '°';
+    }
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (state.started && state.turn === 'player' && !state.projectile && !state.over) {
+        launchShell(false, state.angle, state.power);
+      }
+    }
+  });
+
+  // Boot Render Engine Immediately
+  generateTerrain();
+  updateHUD();
+  requestAnimationFrame(renderScene);
+})();
 </script>
 </body>
 </html>
