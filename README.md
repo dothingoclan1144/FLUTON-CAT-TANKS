@@ -1,18 +1,5 @@
 # FLUTON CAT TANKS
 
-A browser-based, turn-based artillery tank game with a black-cat pilot, Worms-inspired aiming and terrain destruction, a 10-minute round timer, CPU opponent, stage progression, and a demo $FLUTON armory.
-
-## Run locally
-Open `index.html` in a modern browser. No build tools or dependencies are required.
-
-## Publish on GitHub Pages
-1. Create a new public GitHub repository, for example `fluton-cat-tanks`.
-2. Upload `index.html`, `fluton-logo.png`, and this `README.md` to the repository root. Keep the logo filename unchanged so the game can load it.
-3. Open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select `main` and `/ (root)`, then Save.
-6. Wait for the Pages URL to appear.
-
 ## Controls
 - Aim and power: sliders
 - Move: on-screen buttons, or A / D
