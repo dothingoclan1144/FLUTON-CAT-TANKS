@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FLUTON CAT TANKS</title>
+<style>
+:root{--bg:#090d17;--panel:#111a2b;--line:#273651;--cyan:#69e4e8;--gold:#ffd36a;--pink:#ff668e;--muted:#9aabc4}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#203452 0,#090d17 55%);color:#eef5ff;font-family:Inter,system-ui,Segoe UI,sans-serif;min-height:100vh}
+button{cursor:pointer;border:1px solid #38506e;background:#1b2a42;color:#f5f8ff;border-radius:10px;padding:10px 15px;font-weight:800;letter-spacing:.04em;transition:.15s}
+button:hover{transform:translateY(-1px);border-color:var(--cyan);box-shadow:0 0 18px #69e4e833}button:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.top{max-width:1200px;margin:auto;padding:20px 22px 8px;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:1000;letter-spacing:.16em;font-size:clamp(19px,3vw,28px)}.brand span{color:var(--cyan)}.brand-logo{width:48px;height:48px;object-fit:contain;display:block;border-radius:50%;background:#fff;flex:0 0 auto}.modal-brand-logo{width:76px;height:76px;object-fit:contain;display:block;margin:0 auto 12px;background:#fff;border-radius:50%}.wallet{color:var(--gold);font-weight:900;border:1px solid #6d5831;padding:9px 13px;border-radius:999px;background:#251f16}
+.wrap{max-width:1200px;margin:0 auto;padding:12px 22px 30px}.hud{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin-bottom:12px}.hudbox,.panel{background:linear-gradient(145deg,#142137,#0d1524);border:1px solid var(--line);border-radius:15px;padding:13px 16px;box-shadow:0 10px 30px #0004}
+.hudbox:last-child{text-align:right}.name{font-weight:900}.sub{font-size:12px;color:var(--muted);margin-top:3px}.health{height:8px;background:#26364d;border-radius:20px;margin-top:9px;overflow:hidden}.health i{display:block;height:100%;background:linear-gradient(90deg,#49d69b,#b6ed7c);width:100%;transition:width .25s}
+.timer{text-align:center;min-width:115px}.timer strong{font-size:25px;color:var(--gold);font-variant-numeric:tabular-nums}.timer small{display:block;color:var(--muted);font-size:10px;letter-spacing:.15em}
+.gamegrid{display:grid;grid-template-columns:minmax(0,1fr) 265px;gap:12px}.stage{position:relative;background:#101a2b;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0}
+canvas{display:block;width:100%;height:auto;aspect-ratio:900/510;touch-action:manipulation}
+.sidebar{display:flex;flex-direction:column;gap:12px}.panel h3{margin:0 0 10px;font-size:13px;letter-spacing:.13em;color:var(--cyan)}.statrow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:#cbd8eb}.statrow b{color:white}.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}.controls label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}.controls input{width:100%;accent-color:var(--cyan)}.full{grid-column:1/-1}.fire{background:linear-gradient(120deg,#e94e79,#a62d65);border:0;padding:14px;font-size:15px}.hint{font-size:11px;color:var(--muted);line-height:1.5}.log{height:96px;overflow:auto;font-size:11px;color:#b8c7dc;line-height:1.55}.log div{border-bottom:1px solid #25344a;padding:3px 0}
+.overlay{position:absolute;inset:0;background:#07101ddd;backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px;z-index:5}.modal{width:min(620px,100%);background:linear-gradient(145deg,#172740,#0b1321);border:1px solid #3a5273;border-radius:20px;padding:22px;box-shadow:0 25px 80px #000b}.modal h1{margin:0 0 7px;font-size:clamp(24px,5vw,38px);letter-spacing:.07em}.modal p{color:#aebed4;line-height:1.5}.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:17px 0}.cat{border:1px solid #344a68;background:#101d30;border-radius:13px;padding:12px;text-align:center;cursor:pointer}.cat.selected{border-color:var(--cyan);box-shadow:0 0 0 2px #69e4e833}.cat .art{font-size:42px;display:block;filter:drop-shadow(0 5px 5px #0008)}.cat b{display:block;margin-top:5px}.cat small{color:var(--muted)}.modalactions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}.primary{background:linear-gradient(120deg,#48d9dc,#268da8);color:#06121b;border:0}.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}.item{padding:12px;border:1px solid #31445e;border-radius:12px;background:#101c2d}.item b{display:block}.item small{color:var(--muted);display:block;margin:5px 0 9px}.item button{width:100%}.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#10283a;border:1px solid #4c9aa7;padding:9px 14px;border-radius:99px;font-size:12px;z-index:3;display:none}
+@media(max-width:850px){.gamegrid{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr 1fr}.sidebar .panel:last-child{grid-column:1/-1}.hud{grid-template-columns:1fr auto 1fr}.wrap{padding:8px 10px 20px}.top{padding:14px 12px}}
+@media(max-width:520px){.sidebar{grid-template-columns:1fr}.sidebar .panel:last-child{grid-column:auto}.hudbox{padding:10px}.cats{grid-template-columns:1fr 1fr}.wallet{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand"><img class="brand-logo" src="fluton-logo.png" alt="Fluton logo, original artwork"><div>FLUTON <span>CAT TANKS</span></div></div><div class="wallet">◆ <span id="coins">120</span> $FLUTON</div></header>
+<main class="wrap">
+  <section class="hud">
+    <div class="hudbox"><div class="name" id="playerName">BLACK CAT</div><div class="sub">YOU · <span id="playerWeapon">STANDARD CANNON</span></div><div class="health"><i id="playerHealth"></i></div></div>
+    <div class="hudbox timer"><small>ROUND TIME</small><strong id="timer">10:00</strong><div class="sub" id="turnLabel">YOUR TURN</div></div>
+    <div class="hudbox"><div class="name">RIVAL BOT</div><div class="sub">IRON PAW · CPU</div><div class="health"><i id="enemyHealth"></i></div></div>
+  </section>
+  <section class="gamegrid">
+    <div class="stage">
+      <canvas id="game" width="900" height="510" aria-label="Tank battle game"></canvas>
+      <div class="toast" id="toast"></div>
+      <div class="overlay" id="startOverlay">
+        <div class="modal">
+          <img class="modal-brand-logo" src="fluton-logo.png" alt="Fluton logo, original artwork">
+          <h1>CHOOSE YOUR CAT</h1>
+          <p>Pick your tank pilot. Aim, adjust power, read the wind and blast the rival off the battlefield.</p>
+          <div class="cats" id="catChoices">
+            <div class="cat selected" data-cat="shadow"><span class="art">🐈‍⬛</span><b>SHADOW</b><small>Balanced · Black cat</small></div>
+            <div class="cat" data-cat="ember"><span class="art">🐈‍⬛</span><b>EMBER</b><small>Heavy shell · +damage</small></div>
+            <div class="cat" data-cat="pixel"><span class="art">🐈‍⬛</span><b>PIXEL</b><small>Quick reload · +aim</small></div>
+          </div>
+          <div class="modalactions"><button class="primary" id="startBtn">ENTER BATTLE</button></div>
+          <p class="hint">Demo build: $FLUTON rewards are simulated in-game points, not transferable tokens.</p>
+        </div>
+      </div>
+      <div class="overlay" id="shopOverlay" style="display:none">
+        <div class="modal">
+          <h1>CAT ARMORY</h1><p>Spend your $FLUTON demo coins on upgrades for the next stage.</p>
+          <div class="statrow"><span>Available balance</span><b id="shopBalance">120 $FLUTON</b></div>
+          <div class="shopgrid" id="shopItems"></div>
+          <div class="modalactions"><button id="skipShop">CONTINUE</button></div>
+        </div>
+      </div>
+      <div class="overlay" id="endOverlay" style="display:none">
+        <div class="modal">
+          <h1 id="endTitle">VICTORY!</h1><p id="endText"></p>
+          <div class="statrow"><span>Battle reward</span><b id="rewardText">+50 $FLUTON</b></div>
+          <div class="modalactions"><button id="nextStage" class="primary">NEXT STAGE</button></div>
+        </div>
+      </div>
+    </div>
+    <aside class="sidebar">
+      <div class="panel">
+        <h3>FIRE CONTROL</h3>
+        <div class="controls">
+          <div><label for="angle">ANGLE <b id="angleVal">45°</b></label><input id="angle" type="range" min="5" max="85" value="45"></div>
+          <div><label for="power">POWER <b id="powerVal">65%</b></label><input id="power" type="range" min="25" max="100" value="65"></div>
+          <button class="fire full" id="fireBtn">✦ FIRE CANNON</button>
+          <button id="leftBtn">◀ MOVE</button><button id="rightBtn">MOVE ▶</button>
+        </div>
+        <p class="hint">Desktop: use sliders, A/D to move, Space to fire. On mobile, tap controls. Wind changes every turn.</p>
+      </div>
+      <div class="panel">
+        <h3>BATTLE DATA</h3>
+        <div class="statrow"><span>Stage</span><b id="stageNo">01</b></div>
+        <div class="statrow"><span>Wind</span><b id="wind">→ 2.0</b></div>
+        <div class="statrow"><span>Ammo</span><b id="ammo">∞</b></div>
+        <div class="statrow"><span>Damage bonus</span><b id="damageBonus">0%</b></div>
+        <div class="statrow"><span>Shield</span><b id="shieldStat">0</b></div>
+      </div>
+      <div class="panel"><h3>COMBAT LOG</h3><div class="log" id="log"><div>System online. Choose your pilot.</div></div></div>
+    </aside>
+  </section>
+</main>
+<script>
+(() => {
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+const W=900,H=510,ground=[],cats={shadow:{name:'SHADOW',damage:1,aim:0},ember:{name:'EMBER',damage:1.25,aim:0},pixel:{name:'PIXEL',damage:1,aim:5}};
+let state={started:false,turn:'player',playerHP:100,enemyHP:100,playerX:175,enemyX:725,angle:45,power:65,wind:2,coins:120,stage:1,seconds:600,selected:'shadow',damage:0,shield:0,ammo:0,projectile:null,explosions:[],shopBought:{},over:false,turnLock:false};
+function terrain(){ground.length=0;for(let x=0;x<=W;x++){let y=355+Math.sin(x*.012)*18+Math.sin(x*.033)*9+Math.sin(x*.005)*24;ground[x]=Math.max(275,Math.min(415,y));}}
+function surface(x){return ground[Math.max(0,Math.min(W,Math.round(x)))];}
+function drawCatTank(x,enemy=false){let y=surface(x),flip=enemy?-1:1;ctx.save();ctx.translate(x,y);ctx.scale(flip,1);
+ // tank tracks
+ ctx.fillStyle='#202b3c';ctx.beginPath();ctx.roundRect(-39,-18,78,20,8);ctx.fill();ctx.strokeStyle='#7b91a8';ctx.lineWidth=2;for(let i=-28;i<=28;i+=14){ctx.beginPath();ctx.arc(i,-8,4,0,Math.PI*2);ctx.stroke();}
+ // turret
+ ctx.fillStyle=enemy?'#8d5362':'#4b9b8c';ctx.beginPath();ctx.roundRect(-23,-34,48,22,8);ctx.fill();
+ ctx.fillStyle='#111827';ctx.fillRect(0,-32,37,7);
+ // cat head
+ ctx.fillStyle='#080b12';ctx.beginPath();ctx.moveTo(-19,-35);ctx.lineTo(-18,-61);ctx.lineTo(-3,-49);ctx.lineTo(10,-60);ctx.lineTo(18,-35);ctx.quadraticCurveTo(0,-24,-19,-35);ctx.fill();
+ ctx.fillStyle='#f1c7d4';ctx.beginPath();ctx.moveTo(-14,-48);ctx.lineTo(-16,-57);ctx.lineTo(-7,-51);ctx.fill();ctx.beginPath();ctx.moveTo(7,-51);ctx.lineTo(15,-57);ctx.lineTo(13,-47);ctx.fill();
+ ctx.fillStyle='#8af2d7';ctx.beginPath();ctx.ellipse(-7,-40,2.5,4,0,0,Math.PI*2);ctx.ellipse(8,-40,2.5,4,0,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#f4d6df';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-2,-35);ctx.lineTo(1,-33);ctx.lineTo(4,-35);ctx.stroke();
+ ctx.restore();
+}
+function draw(){ctx.clearRect(0,0,W,H);
+ let sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#132d4a');sky.addColorStop(.65,'#283c55');sky.addColorStop(1,'#17283a');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+ // stars / distant moons
+ for(let i=0;i<42;i++){let x=(i*173)%W,y=(i*67)%235;ctx.fillStyle=i%3?'#a7d5e8':'#f7d88b';ctx.globalAlpha=.25+(i%4)*.12;ctx.fillRect(x,y,2,2);}ctx.globalAlpha=1;
+ ctx.fillStyle='#263c4d';ctx.beginPath();ctx.moveTo(0,300);for(let x=0;x<=W;x+=12)ctx.lineTo(x,300+Math.sin(x*.009)*17+Math.sin(x*.027)*13);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+ ctx.beginPath();ctx.moveTo(0,ground[0]);for(let x=0;x<=W;x+=3)ctx.lineTo(x,ground[x]);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();let dirt=ctx.createLinearGradient(0,320,0,H);dirt.addColorStop(0,'#b67b49');dirt.addColorStop(1,'#493c3a');ctx.fillStyle=dirt;ctx.fill();
+ ctx.strokeStyle='#d4a06b';ctx.lineWidth=3;ctx.beginPath();for(let x=0;x<=W;x+=4)ctx.lineTo(x,ground[x]);ctx.stroke();
+ // coordinates grid
+ ctx.strokeStyle='#c5e8ff12';ctx.lineWidth=1;for(let x=0;x<W;x+=100){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();ctx.fillStyle='#c8d7e8aa';ctx.font='10px monospace';ctx.fillText(x, x+3,14);}
+ drawCatTank(state.playerX,false);drawCatTank(state.enemyX,true);
+ // aim guide
+ if(state.turn==='player'&&!state.projectile){let a=state.angle*Math.PI/180,dir=1;let sx=state.playerX+Math.cos(a)*27,sy=surface(state.playerX)-46-Math.sin(a)*22;ctx.setLineDash([5,6]);ctx.strokeStyle='#75f3dfaa';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+Math.cos(a)*70,sy-Math.sin(a)*70);ctx.stroke();ctx.setLineDash([]);}
+ if(state.projectile){ctx.fillStyle='#fff0a1';ctx.shadowColor='#ff9d45';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(state.projectile.x,state.projectile.y,7,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;}
+ state.explosions.forEach(e=>{ctx.globalAlpha=Math.max(0,e.life/24);ctx.fillStyle='#ffb347';ctx.beginPath();ctx.arc(e.x,e.y,e.r*(1-e.life/30),0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;});
+ ctx.fillStyle='#d6e5f4';ctx.font='12px monospace';ctx.fillText('X: '+Math.round(state.playerX)+'  Y: '+Math.round(surface(state.playerX)),18,25);
+ ctx.fillStyle='#ffdf94';ctx.fillText('WIND '+(state.wind>=0?'→ ':'← ')+Math.abs(state.wind).toFixed(1),W-130,25);
+}
+function log(msg){let d=document.createElement('div');d.textContent=msg;$('log').prepend(d);}
+function updateHUD(){$('playerHealth').style.width=Math.max(0,state.playerHP)+'%';$('enemyHealth').style.width=Math.max(0,state.enemyHP)+'%';$('coins').textContent=state.coins;$('stageNo').textContent=String(state.stage).padStart(2,'0');$('wind').textContent=(state.wind>=0?'→ ':'← ')+Math.abs(state.wind).toFixed(1);$('damageBonus').textContent=state.damage+'%';$('shieldStat').textContent=state.shield;$('playerName').textContent=cats[state.selected].name;$('playerWeapon').textContent=state.damage?'UPGRADED CANNON':'STANDARD CANNON';$('turnLabel').textContent=state.turn==='player'?'YOUR TURN':'RIVAL AIMING';$('fireBtn').disabled=!state.started||state.turn!=='player'||!!state.projectile||state.turnLock||state.over;}
+function setAngle(v){state.angle=+v;$('angleVal').textContent=v+'°';draw();}
+function setPower(v){state.power=+v;$('powerVal').textContent=v+'%';}
+function crater(x,r){for(let i=Math.max(0,Math.floor(x-r));i<=Math.min(W,Math.ceil(x+r));i++){let dx=i-x,cut=Math.sqrt(Math.max(0,r*r-dx*dx));ground[i]=Math.min(H,Math.max(ground[i],surface(x)+cut*.75));}for(let i=Math.max(0,Math.floor(x-r));i<=Math.min(W,Math.ceil(x+r));i++)ground[i]=Math.min(H,ground[i]);}
+function fire(isCPU=false){if(state.projectile||state.over)return;if(!isCPU&&state.turn!=='player')return;
+ const angle=(isCPU?Math.atan2(surface(state.enemyX)-surface(state.playerX),state.playerX-state.enemyX):state.angle*Math.PI/180);
+ const a=isCPU?Math.abs(angle):angle,dir=isCPU?-1:1,power=isCPU?62:state.power;
+ let x=(isCPU?state.enemyX:state.playerX)+dir*Math.cos(a)*31,y=surface(isCPU?state.enemyX:state.playerX)-49;
+ let speed=power*.22;state.projectile={x,y,vx:dir*Math.cos(a)*speed,vy:-Math.sin(a)*speed,owner:isCPU?'enemy':'player',life:0};
+ log((isCPU?'Iron Paw':'You')+' fired a shell.');updateHUD();loopProjectile();
+}
+function loopProjectile(){if(!state.projectile)return;let p=state.projectile;p.vy+=.16;p.vx+=state.wind*.002;p.x+=p.vx;p.y+=p.vy;p.life++;
+ let hitGround=p.x<0||p.x>W||p.y>surface(Math.max(0,Math.min(W,p.x)))||p.y>H;
+ let targetX=p.owner==='player'?state.enemyX:state.playerX;
+ let hitTank=Math.hypot(p.x-targetX,p.y-(surface(targetX)-25))<36;
+ if(hitGround||hitTank||p.life>180){let x=Math.max(0,Math.min(W,p.x)),y=Math.min(H,Math.max(0,p.y));impact(x,y,p.owner);return;}
+ draw();requestAnimationFrame(loopProjectile);
+}
+function impact(x,y,owner){let radius=48+(state.stage*2);state.explosions.push({x,y,r:radius,life:24});crater(x,radius*.85);
+ let target=owner==='player'?state.enemyX:state.playerX,dist=Math.abs(x-target),dmg=Math.max(5,Math.round((radius-dist)*.9*(owner==='player'?cats[state.selected].damage*(1+state.damage/100):1)));
+ if(dist<radius+24){if(owner==='player')state.enemyHP=Math.max(0,state.enemyHP-dmg);else{let blocked=Math.min(state.shield,dmg);state.shield-=blocked;state.playerHP=Math.max(0,state.playerHP-(dmg-blocked));}log((owner==='player'?'Enemy':'You')+' took '+dmg+' damage.');}
+ else log('Shell missed. Adjust your angle.');
+ state.projectile=null;draw();updateHUD();
+ if(state.enemyHP<=0||state.playerHP<=0){finish(state.enemyHP<=0);return;}
+ state.turn=owner==='player'?'enemy':'player';state.wind=(Math.random()*6-3);updateHUD();
+ if(state.turn==='enemy'){state.turnLock=true;setTimeout(()=>{fire(true);state.turnLock=false;},850);}
+}
+function finish(win){state.over=true;state.started=false;let reward=win?50+state.stage*15:15;state.coins+=reward;$('endTitle').textContent=win?'VICTORY, CAT COMMANDER!':'TANK DOWN';$('endText').textContent=win?'You cleared the battlefield. Your next stage is waiting.':'The rival tank got the better shot. Upgrade and come back stronger.';$('rewardText').textContent='+'+reward+' $FLUTON';$('endOverlay').style.display='flex';updateHUD();}
+function startGame(){state.started=true;state.over=false;state.playerHP=100;state.enemyHP=100;state.playerX=175;state.enemyX=725;state.seconds=600;state.turn='player';state.wind=Math.random()*4-2;state.projectile=null;state.explosions=[];state.turnLock=false;terrain();$('startOverlay').style.display='none';$('shopOverlay').style.display='none';$('endOverlay').style.display='none';log('Stage '+state.stage+' started. Good hunting.');updateHUD();draw();timer();}
+let timerHandle=null;function timer(){clearInterval(timerHandle);timerHandle=setInterval(()=>{if(!state.started)return;state.seconds--;let m=Math.floor(state.seconds/60),s=state.seconds%60;$('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(state.seconds<=0){clearInterval(timerHandle);finish(state.playerHP>=state.enemyHP);}},1000);}
+function move(dx){if(!state.started||state.turn!=='player'||state.projectile)return;state.playerX=Math.max(45,Math.min(420,state.playerX+dx));draw();}
+function shop(){let items=[{id:'damage',name:'OVERCHARGED SHELL',desc:'+15% cannon damage for future stages',cost:65,apply:()=>state.damage+=15},{id:'shield',name:'NINE-LIFE SHIELD',desc:'Absorb 25 damage in the next battle',cost:55,apply:()=>state.shield+=25},{id:'aim',name:'LASER SIGHT',desc:'Aim angle +5° precision bonus',cost:45,apply:()=>state.angle=Math.min(85,state.angle+5)},{id:'repair',name:'CAT NAP REPAIR',desc:'Restore 35 HP before next stage',cost:40,apply:()=>state.playerHP=Math.min(100,state.playerHP+35)}];
+ $('shopBalance').textContent=state.coins+' $FLUTON';$('shopItems').innerHTML='';
+ items.forEach(it=>{let el=document.createElement('div');el.className='item';el.innerHTML='<b>'+it.name+'</b><small>'+it.desc+'</small><button '+(state.coins<it.cost||state.shopBought[it.id]?'disabled':'')+'>'+ (state.shopBought[it.id]?'PURCHASED':'BUY · '+it.cost+' ◆')+'</button>';el.querySelector('button').onclick=()=>{if(state.coins<it.cost||state.shopBought[it.id])return;state.coins-=it.cost;state.shopBought[it.id]=true;it.apply();log('Purchased '+it.name+'.');shop();updateHUD();};$('shopItems').appendChild(el);});
+ $('shopOverlay').style.display='flex';}
+document.querySelectorAll('.cat').forEach(el=>el.onclick=()=>{document.querySelectorAll('.cat').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');state.selected=el.dataset.cat;});
+$('startBtn').onclick=startGame;$('fireBtn').onclick=()=>fire(false);$('leftBtn').onclick=()=>move(-18);$('rightBtn').onclick=()=>move(18);$('angle').oninput=e=>setAngle(e.target.value);$('power').oninput=e=>setPower(e.target.value);
+$('nextStage').onclick=()=>{state.stage++;state.shopBought={};$('endOverlay').style.display='none';shop();};
+$('skipShop').onclick=()=>{startGame();};
+document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='a')move(-12);if(e.key.toLowerCase()==='d')move(12);if(e.code==='Space'){e.preventDefault();fire(false);}if(e.key==='ArrowUp')setAngle(Math.min(85,state.angle+2));if(e.key==='ArrowDown')setAngle(Math.max(5,state.angle-2));});
+terrain();draw();updateHUD();setAngle(45);setPower(65);
+})();
+</script>
+</body></html>
